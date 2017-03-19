@@ -1,0 +1,41 @@
+\chapter{Algorithm design problems}
+
+\section{Greedy}
+\begin{Exercise}[origin={NTU CSIE 97, NTNU CSIE 97}]
+Consider the following scheduling problem. Suppose a man has several jobs waiting for his treatments. Each job takes one unit of time to finish and has a deadline and a profit. He can only do one job at any time. If a job starts before or at its deadline, its profit is obtained. The goal is to schedule the jobs so as to maximize the total profit. But not all jobs have to be scheduled. Please design an efficient algorithm to find a schedule that maximizes the total profit.
+\end{Exercise}
+\begin{Answer}
+The idea is based on the greedy method. Sort the jobs by increasing deadline and process jobs in the sorted order.
+Let the schedule be empty initially. When considering the job $j$, if assigning job $j$ to the last slot will not violate the constraint, then assign job $j$ to the latest time slot; otherwise if there is a job $k$ in schedule that has profit smaller than job $j$, then replace job $k$ by job $j$. We prove the correctness of this algorithm by contradiction. Suppose that there exists an optimal solution that is different from the solution found by the greedy algorithm, then it has some jobs that we did not select. The most profitable job among these unselected jobs is assigned into an optimal schedule but unassigned in our schedule; however, it is impossible. The time complexity is $O(n \lg n)$.
+\end{Answer}
+
+
+\section{Dynamic programming}
+\begin{Exercise}[origin={CYCU CSIE 90}]
+A one way railway has $n$ stops. Suppose that for all $i < j$, the price of the ticket fro the $i$-th stop to $j$-th stop is know, denoted $\text{cost}(i, j)$. (There is no traffic in the reverse direction since the railway is one-way.) Apply the dynamic programming technique to design your algorithm that outputs the minimum travel cost from stop $1$ to stop $n$, and all the intermediate stops that the travel takes. What is the time complexity of your algorithm.
+\end{Exercise}
+\begin{Answer}
+Let $F(i, j)$ be the minimum cost of traveling from stop $i$ to stop $j$. The recurrence relation of $F$ is 
+\[ F(i, j) = 
+   \begin{cases}
+    0 & \text{if } i = j \\
+    \min( \min_k F(i, k) + F(k, j), C_{ij}) & \text{if } i < j.
+    \end{cases} \]
+The time complexity is $O(n^3)$.
+\end{Answer}
+
+\begin{Exercise}[origin={NCNU CSIE 93}]
+Suppose that we cut a stick of length $L$ (a positive integer) with the probability $P$ at each position such that its distance from the left end is a positive integer.
+Design an efficient dynamic programming algorithm for calculating the probability that a stick of length at least $n$ remains.
+\end{Exercise}
+\begin{Answer}
+Let $F(k, n)$ be the probability of cutting stick of length $k$ such that at least length $n$ remains. The recurrence relation of $F$ is 
+
+\[ F(k, n) = 
+   \begin{cases}
+       0 & \text{for all } 1 \leq k \leq n-1 \\ 
+       (1-P)^{n-1} + \sum_{i=1}^{n-1} P(1-P)^{i-1}F(k-i-1, n) +  & \text{for all } k \geq n.
+    \end{cases} \]
+We can use this recurrence relation to calculate the probability.    
+\end{Answer}
+\printbibliography[heading=subbibliography]

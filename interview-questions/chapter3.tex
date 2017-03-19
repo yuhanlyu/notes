@@ -1,0 +1,53 @@
+\chapter{Data structures}
+
+\section{Stack \& queue}
+\begin{Exercise}[title=Implement a stack using queues]
+Implement a stack by using queues.
+\end{Exercise}
+\begin{Answer}
+Use two queues. 
+The first queue stores all top elements in the stack with size at most $O(\sqrt{n})$. 
+The second queue stores all other elements. 
+Both queues maintain stack order. 
+
+For the pop operation, if the first queue is not empty, dequeue from the first queue.
+Otherwise, dequeue from the second queue.
+
+For push operation, enqueue to the first queue. 
+Then, use queue operations to reorder the elements in the first queue to maintain stack order. 
+If the size of the first queue is larger than $\sqrt{n}$, then insert all elements in the second queue to the first queue and swap first queue with the second queue.
+
+\subparagraph{Complexity analysis} The pop operation takes $O(1)$ time in the worst case. The push operation takes $O(\sqrt{n})$ amortized time.
+In general, a stack can be simulated by $k$ queues so that each of push and pop operations takes $O(n^{\frac{1}{k}})$ amortized time.
+\begin{remark}
+The above solution is from H{\"{u}}hne's paper~\cite{Huhne1993}.\footnote{\url{http://cstheory.stackexchange.com/questions/2562/one-stack-two-queues}.} This problem appears on \href{https://leetcode.com/problems/implement-stack-using-queues/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+\begin{enumerate}
+\item implement a queue using stacks: this problem has been used in Ph.D. qualify exam in Princeton.\footnote{\url{https://rjlipton.wordpress.com/2010/04/25/natural-natural-and-natural/}.} A queue can be simulated by stacks so that each operation takes $O(1)$ time in the worst case~\cite{Hood1981}.\footnote{\url{http://stackoverflow.com/a/5573398/1260984}.} A deque can be simulated by stacks so that each operation takes $O(1)$ time in the worst case~\cite{Chuang1993}. This problem appears on \href{https://leetcode.com/problems/implement-queue-using-stacks/}{LeetCode}.
+\item implement a deque with max operation: an implementation of deque with max operation for which the worst-case time per operation is $O(1)$ exists~\cite{Gajewska1986}. The special case of implementing a queue with max operation appears on \href{https://leetcode.com/problems/sliding-window-maximum/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Reverse_Polish_notation#Postfix_algorithm}{evaluate reverse Polish notation}: this problem appears on \href{https://leetcode.com/problems/evaluate-reverse-polish-notation/}{LeetCode}.
+\item evaluate infix expression: this problem can be solved by using the \href{https://en.wikipedia.org/wiki/Shunting-yard_algorithm}{shunting-yard algorithm}. This problem appears on \href{http://www.lintcode.com/en/problem/expression-evaluation/}{LintCode}.
+\end{enumerate}
+
+\section{Heap}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Median_filter}{median filter}: one special case of finding the running medians appears on \href{https://leetcode.com/problems/find-median-from-data-stream/}{LeetCode}.
+\end{enumerate}
+
+\section{Tree}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Tree_traversal#Morris_in-order_traversal_using_threading}{Morris traversal}: traverse a binary tree without using a stack. One application is to invert a binary tree, which appears on \href{https://leetcode.com/problems/invert-binary-tree/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Binary_tree#Encodings}{encode binary tree}: this problem appears on \href{https://leetcode.com/problems/serialize-and-deserialize-binary-tree/}{LeetCode}.
+\end{enumerate}
+
+\section{Graph}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Eulerian_path}{Euler path}: the problem of finding the smallest Euler path in the lexical order appears on \href{https://leetcode.com/problems/reconstruct-itinerary/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Connected-component_labeling}{connected-component labeling}: this problem appears on \href{https://leetcode.com/problems/number-of-islands/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Topological_sorting}{topological sort}: this problem appears on \href{http://www.lintcode.com/en/problem/topological-sorting/}{LintCode}.
+\end{enumerate}
+
+\printbibliography[heading=subbibliography]

@@ -1,0 +1,71 @@
+\chapter{Algorithms design}
+
+\section{Greedy}
+\begin{Exercise}
+Given an array $A$ of $n$ integers, design an algorithm to construct an array $B$ of $n$ integers minimizing $\sum_{i = 0}^{n-1} B[i]$ subject to:
+\begin{enumerate}
+\item $B[i] > 0$ for all $0 \leq i < n$.
+\item $B[i] > B[i + 1]$ if $A[i] > A[i + 1]$ for all $0 \leq i < n - 1$.
+\item $B[i] < B[i + 1]$ if $A[i] < A[i + 1]$ for all $0 \leq i < n - 1$.
+\end{enumerate}
+\end{Exercise}
+\begin{Answer}
+This problem can be considered as a \href{https://en.wikipedia.org/wiki/Constraint_satisfaction_problem}{constraint satisfaction problem} in which all $B[i]$'s are variables, and corresponding constraints can be modeled.
+Since the \href{https://en.wikipedia.org/wiki/Constraint_graph}{constraint graph} is a path, the problem can be solved in linear time by enforcing \href{https://en.wikipedia.org/wiki/Local_consistency#Directional_consistency_and_satisfiability}{directional consistency} first and then assign values.
+
+For each $i$, let $D_i$ be the domain of $B[i]$.
+The algorithm is as follows:
+initially, $D[i]$ is the set of all positive integers for all $0 \leq i < n$.
+Then, process $A[i]$ for $i = 0$ to $i = n - 1$ in order.
+If $A[i] < A[i + 1]$, then the domain of $B[i+1]$ is changed to the set of all positive integers that are larger than $\min D_i$.
+After all $A[i]$ are processed, all domains are directional consistent in the constraint graph.
+Finally, assign all $B[i]$ from $i = n - 1$ to $0$ to the smallest integer in $D_i$ that are consistent with the previous variables.
+\begin{remark}
+This problem appears on \href{https://leetcode.com/problems/candy/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Gasoline puzzle]
+There are $n$ gas station around a circle and station $i$ has a finite amount of gas $g[i]$. 
+You can only drive car in increasing order of $i$ and wrapping around in the $n$-th station. 
+The fuel consumption from the station $i$ to the station $(i + 1) \text{ mod } n$ is $c[i]$. 
+Design an algorithm to find a feasible stating location so that you can finish a round trip.
+\end{Exercise}
+\begin{Answer}
+Let $x[i] = g[i] - c[i]$. If the summation of $x[i]$ is less than zero, then round-trip is impossible. 
+Let $P[i]$ be the summation of $x[0\dots i]$. 
+Than pick the index $i$ that minimizes $P[i-1]$ as the starting point. 
+For any station $j > i$, the amount of gas that we will have at station $j$ is $P[j-1] - P[i-1]$, which is never negative. 
+Similarly, it is feasible to arrive all stations $j < i$ and back to $i$.
+\begin{remark}
+The solution can be used to solve combinatorial optimization problem~\cite{Berger2011}. This problem appears on \href{https://leetcode.com/problems/gas-station/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+
+\subsection{Other problems}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Change-making_problem}{change-making problem}: whether the greedy method is applicable can be tested in polynomial time~\cite{Pearson2005}. This problem appears on \href{https://leetcode.com/problems/coin-change/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Interval_scheduling#Interval_Scheduling_Maximization}{interval scheduling}: this problem appears on \href{https://codility.com/demo/take-sample-test/max_nonoverlapping_segments/}{Codility}.
+\end{enumerate}
+
+\section{Backtracking}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Sudoku}{Sudoku}: this problem appears on \href{https://leetcode.com/problems/sudoku-solver/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Eight_queens_puzzle}{$n$-queens}: this problem appears on \href{https://leetcode.com/problems/n-queens-ii/}{LeetCode}.
+\end{enumerate}
+
+\section{Dynamic programming}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Subset_sum_problem}{subset sum problem}: this problem appears on \href{http://www.lintcode.com/en/problem/backpack/}{LintCode}.
+\item \href{https://en.wikipedia.org/wiki/Knapsack_problem}{knapsack problem}: this problem appears on \href{http://www.lintcode.com/en/problem/backpack-ii/}{LintCode}.
+\end{enumerate}
+
+\section{Computational geometry}
+\begin{enumerate}
+\item collinear points: given a set of points in a plane, collinear points can be identified in $O(n^2)$ time in the worst case using $O(n)$ space by using \href{https://en.wikipedia.org/wiki/Arrangement_of_lines#Algorithms}{arrangement of lines}. One special case of finding the maximum number of collinear points appears on \href{https://leetcode.com/problems/max-points-on-a-line/}{LeetCode}.
+\end{enumerate}
+
+
+
+\printbibliography[heading=subbibliography]

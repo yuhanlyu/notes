@@ -1,0 +1,331 @@
+\chapter{Problems on arrays}
+Arrays are the simplest data structures.
+An array $A$ of length $n$ is a sequence of $n$ elements, $A[0], \dots, A[n - 1]$.
+If each element is also an array, the array is called a \emph{matrix}.
+An array of $n$ arrays, in which each $A[i]$ is an array of length $m$, is called an $n \times m$ \emph{matrix}.
+
+\paragraph{Notation}
+For an array $A$, $A[i \dots j]$ denotes the subarray $A[i] \dots A[j]$.
+For two arrays $A$ and $B$, $A + B$ denotes the concatenation of $A$ and $B$.
+
+\section{Find specified element(s)}
+In this section, we focus on the problems of finding specified element(s) in a given array or matrix.
+
+\begin{Exercise}
+Let $A$ be an array of $n$ integers, in which all integers are between 0 and $n - 2$.
+Moreover, all integers between 0 and $n - 2$ appear at least once in $A$; that is, there is only one duplicate integer in $A$.
+Design an algorithm to find the duplicate elements in $A$ without modifying the content of $A$.
+\end{Exercise}
+
+\begin{Answer}
+Since each integer in $A$ is between $0$ and $n - 2$, each element in $A$ can be considered as a node in a linked list; that is, the $i$-th element points to the $A[i]$-th element.
+Finding the duplicate integer, $k = A[i] = A[j]$ for some indices $i$ and $j$, is equivalent to finding the $k$-th element, pointed by exactly two elements: the $i$-th element and the $j$-th element.
+Since $n - 1$ is not in $A$, the $(n - 1)$-th element can be considered as the head of the linked list. 
+Since two elements are pointing to the $k$-th element, a cycle exists in the linked list, and the head of the cycle must be the $k$-th element.
+Thus, we can use the \href{https://en.wikipedia.org/wiki/Cycle_detection}{cycle detection algorithm} to find the head of the cycle, which is the duplicate integer.
+
+\subparagraph{Complexity analysis} The time complexity of this algorithm is linear, and the space complexity is $O(1)$.
+\begin{remark}
+This solution is discussed in Giant's paper~\cite{Ginat2012}.
+This problem appears on \href{https://leetcode.com/problems/find-the-duplicate-number/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Majority]
+Given an integer $k > 1$ and an array $A$ of $n$ integers, design an algorithm to find all integers occurring more than $\frac{n}{k}$ times in $A$ if such an integer exists.
+\end{Exercise}
+
+\begin{Answer}
+The key observation for this problem is as follows: let $c$ be an integer occurring more than $\frac{n}{k}$ times in $A$. If $k$ distinct integers are removed from $A$, then $c$ still occurs more than $\frac{n - k}{k}$ times among the remaining integers.
+
+Based on this observation, we maintain a set $S$ of at most $k - 1$ candidates. For each candidate, we also maintain its frequency so far.
+Initially, $S$ is an empty set.
+The algorithm reads the integers in $A$ one by one. 
+Let $x$ be the integer read by the algorithm.
+If $x$ is already in $S$, increase the frequency of $x$ by one. 
+If $x$ is not in $S$ and $\abs{S}$ is smaller than $k$, then insert $x$ into $S$ and set $x$'s frequency to one. 
+Otherwise, decrement all frequencies of all candidates in $S$ by one; this step is equal to removing $k$ distinct integers from $A$.
+
+After processing all integers in $A$, all integers occurring more than $\frac{n}{k}$ times in $A$ should be in $S$, and each candidate can be verified in linear time.
+\subparagraph{Complexity analysis} The time complexity of this algorithm is $O(nk)$.
+\begin{remark}
+This solution is discussed in Misra's paper~\cite{Misra1982}.
+When $k = 2$, this problem is called the \emph{majority finding} problem~\cite{Moore1991}.
+For any positive integer $k$, all integers occurring more than $\frac{n}{k}$ times can be found in linear time independent of $k$~\cite{Karp2003}. 
+This problem appears on \href{http://www.lintcode.com/en/problem/majority-number-iii/}{LintCode} and \href{https://leetcode.com/problems/majority-element-ii/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Saddleback search]
+Given an integer $x$  and an $n \times m$ matrix $M$ of integers, $m \leq n$, in which all rows and columns are in non-decreasing order, design an algorithm to determine whether $x$ in $M$.
+\end{Exercise}
+\begin{Answer}
+The key observation for this problem is as follows: for any pair of indices , $i$ and $j$, if $M[i][j] > x$, then $M[k][j]$ is larger than $x$ for all $i \leq k < n$. Similarly, if $M[i][j] < x$, then $M[i][k]$ is smaller than $x$ for all $0 \leq k \leq j$.
+
+Based on this observation, the algorithm can eliminate either a row or a column after comparing an entry with $x$.
+
+We always compare $x$ of the top-right element of the remaining submatrix. If this entry equals $x$, then we found the answer. If this entry is smaller $x$, then the top row can be discarded. If this entry is larger than $x$, the the rightmost column can be discarded. This technique is called the \emph{saddleback search}.
+\subparagraph{Complexity analysis} Since $M$ has $O(n + m)$ rows and columns, the time complexity is $O(n + m)$. 
+
+\paragraph{A better solution} Let $c = \lfloor m / 2 \rfloor$. First, use binary search to find an index $i$ in the middle column such that $M[i][c] \leq x \leq M[i + 1][c]$. 
+If one of $M[i][c]$ and $M[i + 1][c]$ equals $x$, then we found the answer. 
+Otherwise, the submatrix in the top-left of $M[i][c]$ cannot contain $x$. Similarly, the submatrix in the bottom-right of $M[i + 1][c]$ cannot contain $x$. We can recursively search for $x$ in the remaining two submatrices. 
+\subparagraph{Complexity analysis}  The time complexity is $O(m \lg \frac{n}{m})$.
+\begin{remark}
+This solution is from Bird's paper~\cite{Bird2006}. This problem appears on \href{https://leetcode.com/problems/search-a-2d-matrix-ii/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Selection in a sorted matrix]
+Given a positive integer $k$ and an $n \times m$ matrix $M$ of integers, in which all rows and columns are in non-decreasing order, design an algorithm to find the $k$-th smallest integer in $M$.
+\end{Exercise}
+
+\begin{Answer}
+Since the $k$-th smallest integer must be between $min = \min_{i, j} M[i][j]$ and $max = \max_{i, j} M[i][j]$, the $k$-th smallest integer can be found by using the binary searching on the integers $[min, \dots, max]$.
+
+Note that for any integer $x$, we can determine the rank of $x$ in $O(n + m)$ time by using the saddleback search. 
+Let $[l ,\dots, h]$ be the range of integers to be searched.
+If the rank of $mid = \lfloor (l + h) / 2 \rfloor$ is $k$, then we found the answer.
+If the rank of $mid$ is larger than $k$, then the search range can be reduced to $[l, \dots, mid - 1]$.
+Otherwise, the search range can be reduced to $[mid + 1, \dots, h]$.
+
+\subparagraph{Complexity analysis} Since the maximum number of iterations is $\lg (max - min)$, the time complexity is $O((n + m) \lg (max - min))$.
+
+This solution has two drawbacks: one minor drawback is that $\lg (max - min)$ is in fact linear in the length of the input. 
+Theoretically, this method is not better than applying \href{https://en.wikipedia.org/wiki/Median_of_medians}{linear time selection algorithm} on $M$.
+
+Another drawback is that this method can only be applied on numbers or data like numbers, since this method needs to find the middle of two elements in $M$, even if the middle element is not in $M$. Thus, this method is not general.
+
+\paragraph{A better solution} We use a \href{https://en.wikipedia.org/wiki/Prune_and_search}{prune-and-search} method to iteratively eliminate elements that cannot be the answer until only one element remains.
+
+In each iteration, let $m_i$ be the median of the remaining elements in the $i$-th column.
+Let $m^*$ be the median of the set $\{ m_i \mid 0 \leq i < m \}$ and let $r$ be the rank of $m^*$ in $M$.
+If $r$ is $k$, then we found the answer.
+If $r$ is larger than $k$, then for each column $i$ such that $m_i \geq m^*$, all elements at least $m_i$ can be eliminated.
+If $r$ is smaller than $k$, then for each column $i$ such that $m_i \leq m^*$, all elements at most $m_i$ can be eliminated.
+
+\subparagraph{Complexity analysis} In each iteration, $m^*$ can be determined in $O(m)$ time, and the rank of $m^*$ can be computed in $O(m + n)$ time. Since half of columns are halved in each iteration, the number of iterations is $O(\lg n)$. Thus, the time complexity is $O((m+n) \lg n)$.
+
+\begin{remark}
+This problem can be solved in $O(n)$ time~\cite{Frederickson1982,Frederickson1984,Mirzaian1985}. This problem appears on \href{http://www.lintcode.com/en/problem/kth-smallest-number-in-sorted-matrix/}{LintCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Intersection of two sorted arrays]
+Given two sorted arrays $A$ and $B$, where $\abs{A} = n$ > m =$\abs{B} = m$ and the elements in individual array are distinct, design an algorithm to find the intersection of these two arrays.
+\end{Exercise}
+
+\begin{Answer}
+Use an idea similar to merge two arrays, the intersection can be found in $O(n + m)$ time. 
+However, when $n \gg m$, this algorithm is slow. 
+In the case of $n \gg m$, using binary search to find the occurrence of each element of $B$ in $A$ is more efficient, whose time complexity is $O(m \lg n)$.
+
+\subparagraph{A better solution}
+One key observation is as follows:
+Let $f(i)$ be the index of $A$ satisfying $A[j] \leq B[i] < A[j + 1]$.
+For each index $i$, we know that $B[i']$, $i' < i$, cannot be equal to any element $A[j]$, where $j' > f(i)$.
+Moreover, the value of $f(i)$ can be computed in $O(\lg n)$ time by using a binary search.
+
+Thus, we can use the median, $B[i]$, of $B$ to subdivide $B$ into two subarrays, and subdivide $A$ into two subarrays at the location $A[f(i)]$.
+Then, recursively solve these two independent problems.
+
+\subparagraph{Complexity analysis} 
+The time complexity is $O(m \lg \frac{n}{m})$.
+
+\begin{remark}
+This solution is discussed in Baeza-Yates's and Salinger's paper~\cite{Baeza-Yates2010}.
+Demaine \textit{et al.} proposed a different approach based on exponential search~\cite{Demaine2000}.
+The unsorted version appears on \href{http://www.lintcode.com/en/problem/intersection-of-two-arrays/}{LintCode} and \href{https://leetcode.com/problems/intersection-of-two-arrays/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+Here are some other problems:
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/3SUM}{3-sum}: given an array $A$ of $n$ integers, three elements in $A$ whose sum equals zero can be found in $o(n^2)$ time~\cite{Jorgensen2014}. This problem appears on \href{https://leetcode.com/problems/3sum/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/All_nearest_smaller_values}{all nearest smaller values}: given an array $A$ of $n$ integers, an array $S$, in which $S[i]$ is the largest index $j < i$ subject to $A[j] < A[i]$, can be computed in linear time. That is, for all $0 \leq i < n$, $S[i] = \max \{ j \mid j < i \text{ and } A[j] < A[i] \}$ can be computed in linear time. The solution of this problem can be used to solve the largest rectangle in histogram problem on \href{https://leetcode.com/problems/largest-rectangle-in-histogram/}{LeetCode}. The solution of the largest rectangle in histogram problem can be used to solve the \href{http://www.drdobbs.com/database/the-maximal-rectangle-problem/184410529}{maximal rectangle problem} on \href{https://leetcode.com/problems/maximal-rectangle/}{Leetcode}.
+\item inversion counting: given an array $A$ of $n$ integers, the number of \href{https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics)}{inversions} can be computed in $O(n \lg n)$ time. This problem appears on \href{https://leetcode.com/problems/count-of-smaller-numbers-after-self/}{LeetCode}.
+\end{enumerate}
+
+\section{Find subarray(s) or subsequence(s)}
+In this section, we focus on the problems of finding specified subarray(s) or subsequences in a given array.
+
+\begin{Exercise}[title=Path partition]
+Given a positive integer $k$ and an array $A$ of $n$ integers, design an algorithm to partition $A$ into $k$ subarrays so that the maximum subarray sum among these $k$ subarrays is minimized.\\
+That is, find a sequence of $k$ pairs of indices $\langle (b_1, e_1) \cdots (b_k, e_k) \rangle$ minimizing $\max_{1 \leq i \leq k} \sum_{j = b_i}^{e_i} A[j]$ subject to
+\begin{enumerate} 
+\item $b_1 = 0$ and $e_k = n - 1$,
+\item $b_i \leq e_i$ for all $1 \leq i \leq k$,
+\item and $b_{i + 1} = e_i + 1$ for all $1 \leq i < k$.
+\end{enumerate}
+\end{Exercise}
+\begin{Answer}
+For a number $d$, whether these $n$ integers can be partitioned into $k$ parts with the maximum subarray sum at most $d$ can be verified in linear time by using a greedy approach.
+Let $S = \sum_{i=0}^{n-1} A[i]$ and let $d^*$ be the minimum integer such that $A$ can be partitioned into $k$ parts with the maximum subarray sum at most $d^*$. 
+Since $d^*$ must be between $\lceil \frac{S}{k} \rceil$ and $S$, $d^*$ can be found by using a binary search on integers between $\lceil \frac{S}{k} \rceil$ and $S$.
+\subparagraph{Complexity analysis} The time complexity is $O(n \lg \frac{S(k-1)}{k})$.
+
+\paragraph{A better solution}  Note that $d^*$ must be $\sum_{k=i}^j A[k]$ for some $i$ and $j$.
+Create a matrix $M$, such that $M[i][j] = \sum_{k=i}^j A[k]$, in which all rows and columns in $M$ are in increasing order.
+Finding a pair of indices, $i$ and $j$, such that $M[i][j]$ is $d^*$, is our goal.
+
+We use a \href{https://en.wikipedia.org/wiki/Prune_and_search}{prune-and-search} method to iteratively eliminate elements that cannot be the answer until only one element remains.
+Since creating $M$ takes $O(n^2)$ time, the algorithm should not explicitly create $M$.
+Instead, the algorithm maintains a lower bound and an upper bound for each column to represent the current remaining elements in each column.
+
+In each iteration, let $m_i$ be the median of the remaining elements in the $i$-th column.
+Let $m^*$ be the median of the set $C = \{ m_i \mid 0 \leq i < m \}$.
+If $A$ can be partitioned into $k$ parts with the maximum subarray sum at most $m^*$, then $d^*$ is at most $m^*$.
+Otherwise, $d^*$ should be greater than $m^*$.
+All candidates that cannot be the answer can be pruned by using a saddle back search.
+
+\subparagraph{Complexity analysis} In each iteration, $m^*$ can be determined in $O(n)$ time. 
+Since the saddleback search also takes $O(n)$ time, each iteration takes $O(n)$ time as well. 
+Because at least a quarter of candidates are eliminated in each iteration, the time complexity is $O(n \lg n)$.
+\begin{remark}
+This solution is from the paper of Khanna \textit{et al.}~\cite{Khanna1997}. This problem can be solved in linear time~\cite{Frederickson1991}. This problem appears on \href{http://www.lintcode.com/en/problem/copy-books/}{LintCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=$k$-covers]
+Given a positive integer $k$ and an array $A$ of $n$ non-zero integers, design an algorithm to find $k$ disjoints and non-empty subarrays, called a $k$-cover, with the maximum sum.
+\end{Exercise}
+\begin{Answer}
+Without loss of generality, all consecutive positive/negative integers can be merged into one positive/negative integer. 
+Thus, we assume that $A$ has integers with alternating signs, and the integers at the both ends are positive; that is $\sign(A[i]) \neq \sign(A[i+1])$ for all $0 \leq i < n - 1$, and both $A[0]$ and $A[n - 1]$ are positive, where $n \geq 2k - 1$ is an odd integer.
+
+Creating a prefix sum array $P$, $P[i] = \sum_{j = 0}^i A[i]$, for all $0 \leq i < n$ is a common trick for solving problems involving subarray sum, since the sum of $A[b\dots e] = \sum_{i = b}^{e - 1} A[q]$ becomes $P[e] - P[b - 1]$ assuming $P[-1] = 0$.
+The problem then becomes 
+\begin{mdframed}
+\centering
+find a sequence of disjoint index intervals $\langle [b_0, e_0], \dots, [b_{k-1}, e_{k-1}]\rangle$ maximizing $\sum_{i = 0}^{k - 1} P[e_i] - P[b_i]$.
+\end{mdframed}
+
+Since the signs of integers alternate in $A$, $P[i - 1]$ is smaller than  $P[i]$ for all even $0 \leq i \leq n - 1$ and $P[i]$ is larger than  $P[i + 1]$ for all even $0 \leq i < n - 1$.
+Thus, in an optimal solution, each interval begins at an odd index and ends at an even index.
+For convenience, the \emph{value} of an index interval $[b, e]$ is defined as $P[e] - P[b]$, and its \emph{value interval} is defined as $[P[b], P[e]]$.
+An index interval $[b, e]$ with a positive value satisfying $b$ is odd and $e$ is even is called a \emph{useful} interval.
+Any optimal solution only contains useful intervals.
+
+Now, consider two useful intervals $[b, e]$ and $[b', e']$, where $e < b'$.
+For these two intervals, four possibilities exist in an optimal solution.
+An optimal solution may take none of these intervals, may take both intervals, may take exactly one of the intervals, or may take the interval $[b, e']$.
+We can rule out some possibilities based on the relative order of the value intervals of $[b, e]$ and $[b', e']$.
+
+Let $[l, h]$ and $[l', h']$ be the value intervals of $[b, e]$ and $[b', e']$ respectively.
+If $l \geq l'$, for any solution containing $[b, e'']$ where $e' \leq e''$, another solution can be constructed by replacing the interval $[b, e'']$ by $[b', e'']$, and the resulting solution is no worse than the original solution. 
+Thus, combining the interval $[b, e]$ with other intervals after $[b', e']$ is not necessary.
+
+Based on this observation, we maintain a stack $S$ of value intervals so that
+\begin{enumerate}
+\item let $[l_0, h_0] \dots [l_t, h_t]$ be their value intervals from the bottom to the top. The value interval $[l_i, h_i]$ strictly includes $[l_{i + 1}, h_{i + 1}]$ for all $0 \leq i < t - 1$.
+\item let $[b_0, e_0] \dots [b_t, e_t]$ be their corresponding index intervals from the bottom to the top. These intervals are non-empty and satisfy $e_i < b_{i + 1}$ for all $0 \leq i < t - 1$.
+\end{enumerate}
+
+All useful index intervals having the following form $[b, b + 1]$ are processed in order.
+Let $[l, h]$ be the left end of the top value interval in the stack.
+For each value interval $[l', h']$, three cases are possible:
+\begin{enumerate}
+\item $l \geq l'$: since the top value interval will never be combined with any interval after the current interval, the top interval is popped from $S$, and the value of the top interval, $h_t - l_t$, is stored in a list $L$.
+\item $l < l'$ and $h > h'$: push the current interval to $S$.
+\item $l < l'$ and $h \leq h'$: merge the top interval into the current interval. That is, the top interval is popped, and change the current interval to $[l, h']$. Since an optimal solution may need to use these two intervals separately if $h - l' > 0$, an additional value $h - l'$ is stored in $L$.
+\end{enumerate}
+In the end, the $k$ largest values in $L$ and $S$ are selected, which will be the maximum sum of $k$ disjoint subarrays.
+
+\subparagraph{Complexity analysis} Since each index interval can be pushed and popped at most once, the time complexity is $O(n)$.
+\begin{remark}
+%This problem was firstly considered by Cs{\"{u}}r{\"{o}}s~\cite{Csuros04}.
+Bengtsson and Chen designed the first linear time algorithm for this problem~\cite{Gawrychowski2015}.
+%Gawrychowski and Nicholson designed a data structure that can be built in linear time and supports $k$-cover query $O(k)$ time~\cite{Gawrychowski2015}.
+This problem appears on \href{http://www.lintcode.com/en/problem/maximum-subarray-iii/}{LintCode} and \href{https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/}{LeetCode}.
+When $k = 1$, the problem can be solved by using \href{https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane.27s_algorithm}{Kadane's algorithm}. This special case appears on \href{https://leetcode.com/problems/maximum-subarray/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+Here are some other problems:
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Longest_increasing_subsequence}{longest increasing subsequence}: this problem can be solved in $n \lg n + O(n)$ time~\cite{Fredman1975}. This problem appears on \href{https://leetcode.com/problems/longest-increasing-subsequence/}{LeetCode}.
+\end{enumerate}
+
+\section{Manipulate}
+In this section, we focus on the problems of manipulating a given array.
+
+\begin{Exercise}
+Given a positive integer $k$ and an array $A$ of $n$ integers, design an algorithm to modify $A$ into another array $B$ of $n$ integers in which $\abs{B[i] - B[i + 1]} \leq k$ for all $0 \leq i < n - 1$, while minimizing $\sum_{i=0}^{n - 1} \abs{A[i] - B[i]}$.
+\end{Exercise}
+\begin{Answer}
+This problem can be formulated as a linear programming problem.
+Two set of variables, $X$ and $Y$, are used to represent the result $B[i] = A[i] + X[i] - Y[i]$. 
+The objective function is the summation of $X$ and $Y$. 
+By the difference constraint, $ -k \leq B[i] - B[i+1] \leq k$ is required, and this can be formulated as $-k \leq  A[i] + X[i] - Y[i] - A[i+1] - X[i+1] + Y[i+1] \leq k$. 
+After algebraic manipulation and transform into standard form by introducing slack variables $S$ and $T$, the following two equality constraints can be obtained: 
+\[ X[i] - Y[i] - X[i+1] + Y[i+1] + S[i] = k - P[i] \text{ and } X[i] - Y[i] - X[i+1] + Y[i+1] - T[i] = -k - P[i],\]
+ where $P[i] = A[i] - A[i+1]$. 
+
+From these two equality constraints, $S[i] + T[i]$ must be equal to  $2k$. 
+Thus, one of the equality constraint is removed, and an upper bound $2k$ to $S[i]$ or $T[i]$ is introduced.
+If one one redundant constraint by summing all $n - 1$ equality constraints is introduced and all constraints are negated on both sides, the formulation becomes a min-cost circulation problem.
+Since the underlying graph is a series-parallel graph and min-cost circulation on series-parallel graphs can be solved in $O(n \lg n)$ time, this problem can be solved in $O(n \lg n)$ time as well.
+\begin{remark}
+This solution is from \href{http://www.chaoxuprime.com/posts/2015-01-27-bounded-regression-on-data-streams.html}{here}.
+Booth and Tarjan designed an $O(n \lg n)$-time algorithm for finding a min-cost circulation on series-parallel graphs~\cite{Booth1993}.
+This problem appears on \href{http://www.lintcode.com/en/problem/minimum-adjustment-cost/}{LintCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}[title=Block interchange]
+Given two indices $a$ and $b$ and an array $A$ of $n$ integers, design an algorithm to interchange $A[0 \dots a]$ with $A[b \dots n - 1]$.
+That is, initially $A$ equals $P + M + S$, where $P = A[0 \dots a]$, $M = A[a+1 \dots b-1]$, and $S = A[b \dots n - 1]$, but $A$ equals $S + M + P$ in the end.
+\end{Exercise}
+\begin{Answer}
+One easy solution is as follows:
+First, reverse the whole string so that the string becomes $A^R = S^R + M^R + P^R$.
+Then, reverse $S^R$, $M^R$, and $P^R$ respectively.
+However, this algorithm is not optimal.
+For example, when $\abs{P} = \abs{S}$, only $\abs{P}$ swaps are required, but the algorithm uses $n$ swaps.
+
+\paragraph{A better solution}  The idea is to move characters to the desired locations directly.
+If $\abs{P} \leq \abs{S}$, then first swap $P$ with the last $\abs{P}$ characters of $S$.
+The intermediate result is $S'' + M + S' + P$, where $S = S' + S''$ and $\abs{S''} = \abs{P}$. 
+Since the desired result is $S + M + P$, the algorithm recursively interchanges $S'' + M$ with $S'$ in the subarray $S'' + M + S'$.
+
+If $\abs{P} > \abs{S}$, then first swap the first $\abs{S}$ characters of $P$ with $S$.
+The intermediate result is $S + P'' + M + P'$, where $P = P' + P''$ and $\abs{P'} = \abs{S}$. 
+Since the desired result is $S + M + P$, the algorithm recursively interchanges $P''$ with $M + P'$ in the subarray $P'' + M + P'$.
+
+\subparagraph{Complexity analysis} The algorithms uses $n - \text{gcd}(\abs{P} + \abs{M}, \abs{M} + \abs{S})$ swaps.
+\begin{remark}
+This solution is from Mohammed and Subi's paper~\cite{Mohammed1987}. 
+For the special case of rotating an array circularly, Bentley proposed a juggling algorithm~\cite{Bentley1999}.
+Shene analyzed the time complexity and the lower bound for several algorithms~\cite{Shene1997}.
+Benchmark of these algorithms can be found on~\href{http://www.drdobbs.com/parallel/benchmarking-block-swapping-algorithms/232900395}{Dr.Dobb's}.
+The fastest algorithm is Gries-Mills algorithm~\cite{Gries1981}.
+The problem of rotating an array circularly appears on \href{https://leetcode.com/problems/rotate-array/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+Here are some other problems:
+\begin{enumerate}
+\item matching nuts and bolts: given $n$ nuts and $n$ bolts, every bolt matches exactly one nuts. You can try to match a nut and a bolt and see which one is bigger or they can be matched. 
+However, you cannot compare two bolts or two nuts. All bolts and nuts can be matched in $O(n \lg n)$ time deterministically~\cite{Komlos1998}. This problem can also be solved easily by using the randomized quick sort.\footnote{Using Lomuto partition is easier.}  This problem appears on \href{http://www.lintcode.com/en/problem/nuts-bolts-problem/}{LintCode}.
+\item partition: given an integer $k$ and an array $A$ of $n$ integers, $A$ can be rearranged in linear time so that all integers smaller than $k$ are in front of all integers at least $k$ by using \href{https://en.wikipedia.org/wiki/Quicksort#Hoare_partition_scheme}{Hoare's partition}, which is more efficient than \href{https://en.wikipedia.org/wiki/Quicksort#Lomuto_partition_scheme}{Lomuto partition}.\footnote{\url{http://cs.stackexchange.com/questions/11458/quicksort-partitioning-hoare-vs-lomuto}.} This problem appears on \href{http://www.lintcode.com/en/problem/partition-array/}{Lintcode}.
+\item \href{https://en.wikipedia.org/wiki/Dutch_national_flag_problem}{Dutch national flag problem}: this problem appears on \href{https://leetcode.com/problems/sort-colors/}{LeetCode}.
+\end{enumerate}
+
+\section{Range query}
+In this section, we focus on the problems of building data structures to support range queries.
+\begin{enumerate}
+\item range sum query: given an array $A$ of $n$ integers, build a data structure to represent $A$ supporting the following two queries: 
+\begin{enumerate}
+\item given a pair of indices $i < j$, compute the subarray sum of $A[i \dots j]$.
+\item given an index $i$ and a value $v$, set $A[i]$ to $v$.
+\end{enumerate}
+This problem can be solved by using a \href{https://en.wikipedia.org/wiki/Fenwick_tree}{Fenwick tree}. This problem appears on \href{https://leetcode.com/problems/range-sum-query-mutable/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Range_minimum_query}{range minimum query problem}: this problem appears on \href{http://www.lintcode.com/en/problem/interval-minimum-number/}{LintCode}.
+\end{enumerate}
+
+
+
+\printbibliography[heading=subbibliography]

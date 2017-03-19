@@ -1,0 +1,226 @@
+\chapter{Analysis of algorithms}
+
+\lettrine{T}{he} analysis of algorithms is to determine the amount of resource (time/space) necessary to execute algorithms.
+By analyzing the resources used in algorithms, we can compare different algorithms theoretically.
+
+The amount of resource used in an algorithm is usually represented by a function $T(n)$, where $n$ is the length of the input.
+The goal of the analysis of algorithms is to find out the asymptotic growth rate of $T(n)$ in terms of $n$.
+In computer science, since $n$ denotes the length of the input, we only care about positive values of $n$.
+Similarly, since $T(n)$ denotes the amount of resource, we usually assume that $T(n)$ is positive.
+This is not a real limitation, but can simplify the discussion.
+
+Each textbook usually discusses the analysis of algorithms in the first several chapters.
+For those who want to know further about the analysis of algorithms, you can watch the videos of \href{https://www.coursera.org/course/aofa}{Analysis of Algorithms} on Coursera and read books~\cite{Graham1994,Purdom2004,Sedgewick2013}.
+
+\section{Recurrence relations}
+During the exam, we are often given a recurrence relation $T(n) = a(n)T(b(n)) + f(n)$, and we need to give to a tight bound of $T(n)$. If the problem statements do not explicitly specify the base care, we usually assume that $T(n) = \Theta(1)$ when $n$ is small (less than some constant). In general, we can just focus on some particular values of $n$ as long as these values approach infinity\footnote{There should be a condition specifying what assumptions are applicable.}. For example, we can only consider $n = 2^i$ for all positive integer $i$. 
+Making assumptions can make the analysis easier.
+
+\begin{Exercise}[origin={YZU CSIE 90}]
+\Question Prove or disprove $n^{2 + \frac{\sin n}{\lg n}} = O(n^2)$.
+\Question If $T(n) = 49T(n/7) + n^2 \cos (\sqrt{n})$, please find the tight asymptotic order of $T(n)$.
+\end{Exercise}
+\begin{Answer}
+According to the definition of big O notation, we say $f(n) = O(g(n))$ if there exists constants $c$ and $n'$, such that $f(n) \leq cg(n)$ for all $n > n'$.
+
+For the first problem, we know that the $\sin$ function will fluctuate between $1$ and $-1$. Although $\frac{\sin n}{\lg n}$ will become very small when $n$ approaches infinity, we still cannot get constants $c$ and $n'$ such that $T(n) \leq cn^2$ for all $n > n'$.
+
+For the second problem, we know that the $\cos$ function will fluctuate between $1$ and $-1$. So, the equation $n^2 \cos (\sqrt{n}) = O(n^2)$ holds, and we can apply the master theorem to get $T(n) = O(n^2 \lg n)$.
+\end{Answer}
+
+\subsection{Master theorem}
+The most powerful technique in solving divide-and-conquer recurrence relation is the master theorem.
+Several forms of the master theorem have been proven. Verma gives the following master theorem~\cite{Verma1994}:
+\begin{theorem}
+Let $T(n) = aT(n / b) + f(n)$ for all $n > 1$ and $T(1) = c$ for some constants $a \geq 1$, $b > 1$, $c > 0$, and non-negative function $f(n)$.
+\begin{enumerate}
+\item if $f(n) = O(n^{\lg_b a} / \lg n)(1 + \epsilon)$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^{\lg_b a})$.
+\item if $f(n) = \Theta(n^{\lg_b a} \lg^k n)$ for some $k \geq 0$, then $T(n) = \Theta(n^{\lg_b a} \lg^{k+1} n)$.
+\item if $f(n) = \Omega(n^{\epsilon + \lg_b a})$ for some constant $\epsilon > 0$, and if $af(n/b) \leq kf(n)$ for some constant $k < 1$ and all sufficiently large $n$, then $T(n) = \Omega(f(n))$.
+\item if $f(n) = \Theta(n^{\lg_b a} / \lg n)$, then $T(n) = \Theta(f(n) \lg n \lg \lg n)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{remark} When you apply the master theorem, please pay attention to the following:
+\begin{enumerate}
+\item When the recursion involves floor or ceiling function, the master theorem does not apply. For example, $T(n) = T(\lfloor \frac{n}{2} \rfloor) + T(\lceil \frac{n}{2} \rceil) + n$. 
+\item In order to apply the case 2 (the extended master theorem), $k$ must be non-negative. For example, case 2 does not apply in the case of $T(n) = 2T(\frac{n}{2}) + n/ \lg n$.
+\item In order to apply the case 3, the regularity condition must be satisfied. For example, case 3 does not apply in the case of $T(n) = T(\frac{n}{2}) + n(2 - \cos n)$.
+\end{enumerate}
+\end{remark}
+
+\begin{Exercise}[origin={NCTU CSIE 104}]
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = 2T(\frac{n}{2}) + \frac{n}{\lg^2 n}$. \label{master:1}
+\end{Exercise}
+\begin{Answer}
+
+\paragraph{Problem~\ref{master:1}} By case 1, we know $T(n) = \Theta(n)$.
+
+\paragraph{Problem~\ref{master:1} alternative solution} Suppose that $n = 2^k$. We have
+\begin{align*}
+T(n) &= 2T(\frac{n}{2}) + \frac{n}{\lg^2 n} \\
+\equiv \quad T(n) &= 4T(\frac{n}{4}) + \frac{n}{\lg^2 n} + \frac{n}{(\lg (n)-1)^2} \\
+\equiv \quad T(n) &= 2^k T(1) + n \sum_{i=}^k i^{-2} \\
+\equiv \quad T(n) &= n + n \sum_{i=}^k i^{-2} \\
+\end{align*}
+Since $\sum_{i=}^k i^{-2}$ is lower bounded by one and is upper bounded by $\sum_{i=}^{\infty} i^{-2} = \zeta(2) = \frac{\pi^2}{6}$\footnote{This is the solution for the \href{https://en.wikipedia.org/wiki/Basel_problem}{Basel problem}.}, we have $T(n) = \Theta(n)$.
+\end{Answer}
+
+\subsection{Akra\--Bazzi method}
+The Akra and Bazzi method provides a more general way to solve divide-and-conquer recurrence relations~\cite{Akra1998}. The following version is from~\cite{Leighton1996}.
+\begin{theorem}
+Let \[T(n) = 
+\begin{cases}
+\Theta(1)& 1 \leq n \leq n_0 \\
+\sum_{i=1}^k a_iT(b_in +h_i(n)) + f(n) &\forall n > n_0
+\end{cases}\]
+where
+\begin{enumerate}
+\item $k \geq 1$ is a constant and for all $i$, $a_i > 0$ and $b_i \in (0, 1)$ are constants.
+\item $\abs{f(n)}$ is polynomially-bounded.
+\item for all $i$, $\abs{h_i(n)} = O(x /\lg^2x)$.
+\item $n_0$ is large enough.
+\end{enumerate}
+Let $p$ be the unique solution for $\sum_{i=1}^k a_ib_i^p = 1$. Then
+\begin{enumerate}
+\item if $f(n) = O(n^{p-\epsilon})$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^p)$.
+\item if $f(n) = \Theta(n^{p})$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^p \lg n)$.
+\item if $f(n) = \Omega(n^{p+\epsilon})$ and $f(n)/x^{p+\epsilon}$ is non-decreasing for some constant $\epsilon > 0$, then $T(n) = \Theta(f(n))$.
+\item $T(n) = \Theta\left(n^p\left(1 + \int_1^n \frac{f(u)}{u^{p+1}}du\right)\right)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}
+This version of the Akra\--Bazzi method can deal with floor and ceil function by picking $h_i$.
+\end{remark}
+
+\paragraph{General version}
+Some of the requirements can be relaxed~\cite{Leighton1996}.
+\begin{enumerate}
+\item The second condition is called {\em polynomial-growth condition} and can be replaced by the following weaker requirement: $g(n)$ is nonnegative and exist constants $c_1$ and $c_2$ such that for all $i$ and for all $u \in [b_in + h_i(n), n]$, we have $c_1f(n) \leq f(u) \leq c_2 f(n)$.
+\item The third condition can be replaced by the following weaker requirement: there exists a constant $\epsilon > 0$, $\abs{h_i(n)} \leq n / (\lg^{1 + \epsilon} n)$ for all $i$ and $n \geq n_0$.
+\item The fourth condition is pretty technical and you can find the complete version in the original paper.
+\end{enumerate}
+Drmota and Szpankowski prove a more general theorem that can deal with floor and ceil functions directly~\cite{Drmota2013}.
+
+
+\begin{Exercise}
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = 5T(\frac{n}{5}) + n/\lg n$. \label{ABmethod:1} \school{[NCTU CSIE 93]}
+\Question $T(n) = T(\frac{n}{2} + \sqrt{n}) + n$. \label{ABmethod:2} \school{[NTU CSIE 103]}
+\Question $T(n) = 4T(\frac{n}{5}) + T(\frac{n}{4}) + n$. \label{ABmethod:3} \school{[NCTU BIOINFO 93]}
+\end{Exercise}
+\begin{Answer}
+\paragraph{Problem~\ref{ABmethod:1}} Suppose that $n = 5^k$. We have
+\begin{align*}
+ T(n)  & = 5(5T(\frac{n}{25}) + n/(5(\lg_5 n - \lg_5 5))) + n/\lg n \\
+\equiv \quad T(n) & = 5^kT(1) + n/(\lg n + \lg (n-1) + \cdots + 1) \\
+\equiv  \quad T(n) &=  \Theta(n \lg \lg n) \\
+\end{align*}
+
+\paragraph{Problem~\ref{ABmethod:1} another solution} apply the Akra\--Bazzi method. Set $k = 1$, $a_1 = 5$, $b_1 = 1/5$, and solve $p = 1$. We get
+\[ T(n) = \Theta( n (1 + \int_{1}^n (x / \lg x) x^{-2} dx)) = \Theta(n \lg \lg n). \]
+\begin{remark} Similarly, for any constant $c$, we have $T(n) = cT(\frac{n}{c}) + n/\lg n = \Theta(n \lg \lg n)$.
+\end{remark}
+
+\paragraph{Problem~\ref{ABmethod:2}} apply the Akra\--Bazzi method. Set $k = 1$, $a_1 = 1$, $b_1 = 1/2$, and solve $p = 0$. Then, we get
+\[ T(n) = \Theta( 1 (1 + \int_{1}^n (x / x) dx)) = \Theta(n). \]
+
+\paragraph{Problem~\ref{ABmethod:3}} apply the Akra\--Bazzi method. Set $k = 2$, $a_1 = 4$, $b_1 = 1/5$, $a_2 = 1$, $b_2 = 1/4$, and solve $p \approx 1.03$. Then, we get
+\[ T(n) = \Theta( n^{p}), \text{where} p \approx 1.03. \]
+
+\end{Answer}
+
+\begin{Exercise}[origin={NCTU CSIE 92}]
+Given positive constants $c'$, $c_1, c_2, \dots, c_k$, assume that $T(n) \leq  c'n + \sum_{i=1}^k T(c_in)$ and $\sum_{i=1}^k c_i < 1$. Prove $T(n) = O(n)$.
+\end{Exercise}
+\begin{Answer}
+Apply the Akra\--Bazzi method.
+\end{Answer}
+
+
+\subsection{Full-history recurrence}
+\begin{Exercise}[origin={NTU CSIE 90}]
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = n + \frac{4}{n} \sum_{i=1}^{n-1} T(i)$. \label{full-history:1}
+\end{Exercise}
+\begin{Answer}
+
+\paragraph{Problem~\ref{full-history:1}}
+\begin{align*}
+T(n) & = n + \frac{4}{n} \sum_{i=1}^{n-1} T(i) \\
+\equiv \quad nT(n) &= n^2 + 4\sum_{i=1}^{n-1} T(i) \\
+\equiv \quad (n+1)T(n+1) &= n^2 + 4\sum_{i=1}^{n} T(i) \\
+\equiv \quad (n+1)T(n+1) - nT(n) &= 2n + 1 + 4T(n) \\
+\equiv \quad (n+1)T(n+1) &= (n+4)T(n) + 2n + 1 \\
+\equiv \quad \frac{T(n+1)}{(n+2)(n+3)(n+4)} &= \frac{T(n)}{(n+1)(n+2)(n+3)} + \frac{2n+1}{(n+1)(n+2)(n+3)(n+4)} \\
+\end{align*}
+
+Let $S(n) = \frac{T(n)}{((n+1)(n+2)(n+3))}$.
+\begin{align*}
+S(n+1) & = S(n) + \frac{2n+1}{(n+1)(n+2)(n+3)(n+4)} \\
+\equiv \quad S(n) &= \sum_{i=0}^{n-1} \frac{2i+1}{(i+1)(i+2)(i+3)(i+4)}\\
+\equiv \quad S(n) &= \Theta(1) \\
+\equiv \quad T(n) &= (n+1)(n+2)(n+3)S(n) \\
+\equiv \quad T(n) &= \Theta(n^3) \\
+\end{align*}
+\end{Answer}
+
+
+\subsection{Range transformation}
+\begin{Exercise}[origin={NCTU CSIE 93}]
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = \sqrt{n} T(\sqrt{n}) + \sqrt{n}$. \label{range-transformation:1}
+\end{Exercise}
+\begin{Answer}
+\paragraph{Problem~\ref{range-transformation:1}}
+The trick is to divide $n$ by both side and then expand.
+$\frac{T(n)}{n} =  \frac{T(\sqrt{n})}{\sqrt{n}} + n^{-0.5}$.
+Suppose that $n = 2^{2^k}$. Let $S(k) = T(2^{2^k})/2^{2^k}$. 
+\begin{align*}
+T(n) & = S(k) = S(k-1) + 2^{-2^{k-1}} \\
+\equiv \quad S(k) &= \Theta(1) + \sum_{i=1}^{k-1} 2^{-2^{k-1}} = \Theta(1) \\
+\equiv \quad T(n) &= n \cdot S(k) = n \cdot \Theta(1) = \Theta(n) \\
+\end{align*}
+\end{Answer}
+
+\subsection{Recursion trees}
+\begin{Exercise}
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = 2T(\sqrt{n}) + \lg n$. \label{recursion-trees:1} \school{[NCKU CSIE 95]}
+\Question $T(n) = nT(\sqrt{n}) + n^2 \lg n$. \label{recursion-trees:2} \school{[NTU CSIE 98]}
+\end{Exercise}
+\begin{Answer}
+
+\paragraph{Problem~\ref{recursion-trees:1}} Suppose that $n = 2^{2^k}$. We have
+\begin{align*}
+T(n) &= 2^2T(\sqrt[4]{n}) + 2(\lg n - 1) + \lg n \\
+\equiv \quad T(n) &= 2^k T(1) + \lg n + 2(\lg n)/2 + 4(\lg n)/4 + ... + 2^k(\lg n)/2^k \\
+\equiv \quad T(n) &= 2^k T(1) + \lg n \sum_{i=1}^k 1 \\
+\equiv \quad T(n) &= \Theta(\lg n \lg \lg n) \\
+\end{align*}
+
+\paragraph{Problem~\ref{recursion-trees:2}} Suppose that $n = 2^{2^k}$. We have
+\begin{align*}
+T(n) &= n^{1.5}T(\sqrt[4]{n}) + \frac{n^2 \lg n}{2} + n^2 \lg n \\
+\equiv \quad T(n) &= n^2 T(1) + n^2 \lg n \sum_{i=0}^k 2^{-i} \\
+\equiv \quad T(n) &= \Theta(n^2 \lg n) \\
+\end{align*}
+
+\end{Answer}
+
+\subsection{Comparison}
+\begin{Exercise}[origin={NCTU BIOINFO 93},difficulty=1]
+Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently small $n$. Derive $f(n)$ in the simplest formula for each of the following $T(n)$.
+\Question $T(n) = T(\frac{n}{2}) + T(\sqrt{n}) + n$. \label{comparison:1} \school{[NCTU BIOINFO 93]}
+\end{Exercise}
+\begin{Answer}
+
+\paragraph{Problem~\ref{comparison:1}}
+By the recurrence relation, we have $T(n) = \Omega(n)$. Let $F(n) = F(n/2) + F(n/3) + n$. Since $n/3 >  \sqrt{n}$ for all $n > 9$, we have $F(n) \geq T(n)$.
+By using the Akra\--Bazzi method, we get $F(n) = \Theta(n)$.
+Thus, we have $T(n) = \Theta(n)$.
+\end{Answer}
+
+\printbibliography[heading=subbibliography]

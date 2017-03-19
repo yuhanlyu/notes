@@ -1,0 +1,78 @@
+\chapter{Problems on computational geometry}
+
+\section{Sweep line}
+\begin{Exercise}[title={Power diagrams},origin={NTU CSIE 103},difficulty=2]
+Suppose that you have $n$ circles on a 2D plane. The radius and the center coordinate of each circle can be retrieved in $O(1)$ time. A closed region is defined as a non-empty set of connected 2-D points, and each point is covered by at least one circle.
+\begin{enumerate}
+\item Your task is to find the number of closed regions. Describe your algorithm and data structure in detail. What is the time complexity of your algorithm.
+\item Now we start to add more circles one-by-one to the plane. After each addition, we want to keep track of the number of closed regions. Describe an algorithm and data structure to do so. What is the time complexity of your algorithm for each addition.
+\end{enumerate}
+\end{Exercise}
+\begin{Answer}
+This problems can be solved by using \href{https://en.wikipedia.org/wiki/Power_diagram}{power diagrams}, a generalization of Voronoi diagrams. For the first problem, we build a power diagram and then construct the dual graph of the diagram, where each vertex represents a circle. Then, remove each edge of two non-intersecting circles. The number of components of the resulting graph is the answer. Since power diagram can be built in $O(n \lg n)$ time and the size of the graph is $O(n)$, the time complexity is $O(n \lg n)$. For the second problem, we need to build the power diagram incrementally and this problem can also be done in $O(n \lg n)$~\cite{Aurenhammer1988}.
+\end{Answer}
+
+\begin{Exercise}[origin={NCTU CSIE 93}]
+The input is a set of $n$ rectangles all of whose edges are parallel to the axes. Design an $O(n \lg n)$ algorithm to mark all the rectangles that are contained in other rectangles.
+\end{Exercise}
+\begin{Answer}
+Use the \href{https://en.wikipedia.org/wiki/Sweep_line_algorithm}{sweep line algorithm}. Let the position of left-top point and the right-bottom point of $i$-th rectangle be $(L^x_i, L^y_ i)$ and $(R^x_i, R^y_i)$ respectively. Sort all $L$'s and $R$'s by increasing $x$-coordinate. If some $L$'s or $R$'s have the same $x$-coordinate, then sort them by decreasing $y$-coordinate. According to this ordering, insert or delete all vertical edges of rectangles into an interval tree $I$ one by one. 
+
+When encountering a point $(L^x_i, L^y_ i)$, we can insert the left edge of rectangle $i$ into $I$ and test whether it is contained by some other left edge of rectangle $j$. If so, we can determine whether rectangle $j$ contains rectangle $i$ by their right edge. When encountering a point $(R^x_i, R^y_i)$, we delete the left edge of rectangle $i$ from $I$. The sorting only takes $O(n \lg n)$ time. Since each insertion and deletion takes $O(\lg n)$ time and the algorithm inserts and deletes $O(n)$ times, the time complexity is $O(n \lg n)$.
+\end{Answer}
+
+
+\section{Convex hull}
+
+\begin{Exercise}[title={Farthest pair},origin={NTU CSIE 97}]
+%\Question An extreme point of a convex set is a point of this set that is not a middle point of any line segment with endpoints in this set. Design a linear-time algorithm to determine two extreme points of the convex hull of a given set of $n > 1$ points in the plane. \label{ch:1} \school{[NTOU CSIE 101]}
+Let the input set $X$ consists of $n$ points on the $2$-dimensional plane with integral coordinates. The \emph{farthest pair problem} is to identify two points in $X$ whose Euclidean distance is maximum over all pairs $X$. You are also asked to prove or disprove that the farthest pair problem can be solved in $O(n \lg n)$ time. \label{ch:2}  \school{[NTU CSIE 97]}
+\end{Exercise}
+\begin{Answer}
+%\paragraph{Problem~\ref{ch:1}}
+%Pick the point with the smallest x-coordinate. If there are several points having the smallest x-coordinate, then pick the point with the smallest y-coordinate. This point must be an extreme point. Similarly, the point with the largest x-coordinate is also an extreme point. Finding these two points takes O(n) time.
+\paragraph{Problem~\ref{ch:2}}
+The first step is to find the \href{https://en.wikipedia.org/wiki/Convex_hull_algorithms}{convex hull}, since the farthest pair must be on the convex hull. Then, apply the technique \href{https://en.wikipedia.org/wiki/Rotating_calipers}{rotating calipers} and find the farthest pair of points on the convex hull. Since finding the convex hull takes $O(n \lg n)$ time and rotating calipers takes linear time, the time complexity is $O(n \lg n)$.
+\end{Answer}
+
+\section{Duality}
+\begin{Exercise}
+Show how to determine in $O(n^2 \lg n)$ time whether any three points in the set $S = \{(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)\}$ are collinear. \school{[NTU CSIE 92]}
+\end{Exercise}
+\begin{Answer}
+First, transform the points to \href{https://en.wikipedia.org/wiki/Duality_(projective_geometry)}{dual lines}. If there are three lines intersect at the same point on the dual plane, then the three points in the original plane are collinear. We can construct the \href{https://en.wikipedia.org/wiki/Arrangement_of_lines}{arrangement of lines} to find whether there are three lines intersect at the same point. The time complexity is $O(n^2)$.
+\begin{remark}
+Building the arrangement of lines can be done in $O(n^2)$ time in linear space~\cite{Edelsbrunner1989}.
+\end{remark}
+\end{Answer}
+
+\section{Others}
+
+\begin{Exercise}[origin={NCU CSIE 98},title={Maximal points}]
+In a 2D plane, we say that a point $(x_1, y_1)$ dominates $(x_2, y_2)$ if $x_1 > x_2$ and $y_1 > y_2$. A point is called a \emph{maximal point} if no other point dominates it. Given a set of $n$ points, the maxima finding problem is to find all of the maximal points.
+\begin{enumerate}
+\item Write a divide and conquer algorithm to solve the maxima finding problem with the time complexity $O(n \lg n)$.
+\item Show that your algorithm is indeed of the time complexity $O(n \lg n)$. \school{[NCU CSIE 98]}
+\end{enumerate}
+\end{Exercise}
+\begin{Answer}
+The idea is based on divide and marriage before conquest method.
+First, sort the points by increasing $x$-coordinate. Then, we recursively find maximal points. If there are only two points, then finding the maximal points is easy. 
+
+When the number of points is more than two, divide the points into two parts, $L$ and $R$, by the $x$-coordinate, such that $\abs{\abs{L} - \abs{R}}\leq 1$.
+We first find $R$'s maximal points $R_m$.
+Let $y_m$ be the maximum $y$-coorinate in $R_m$.
+Since each point in $L$ has smaller $x$-coordinate than any points in $R_m$, we remove all points in $L$ with $y$-coordinate smaller than $y_m$.
+Then, we recursively find the maximal points in the remaining points in $L$.
+
+Sorting takes $O(n \lg n)$ time. Since merging two solutions takes linear time, the recurrence relation of the time complexity is $T(n) = 2T(\frac{n}{2}) + O(n)$. By using the master theorem, we prove that the time complexity is $O(n \lg n)$.
+
+\begin{remark}
+In each recursive call, we will find at least one maxima in $R$, and we either find one maxima in $L$ or all points in $L$ will be removed.
+The time complexity actually is $O(n \lg h)$, where $h$ is the number of maximal points~\cite{Kirkpatrick1985}.
+\end{remark}
+\end{Answer}
+
+
+
+\printbibliography[heading=subbibliography]

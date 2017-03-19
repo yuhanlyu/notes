@@ -1,0 +1,44 @@
+\documentclass{book}[12pt]
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage[backend=biber,maxbibnames=99,url=true,doi=true,backref=true,hyperref=true,refsection=chapter,style=numeric-verb,citestyle=numeric,abbreviate=false,alldates=long,dateabbrev=false]{biblatex}
+\usepackage{doi}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     citecolor    = blue
+}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{tikz}
+\usepackage{exercise}
+\usepackage[T1]{fontenc}
+\usepackage{lettrine}
+\usepackage{mdframed}
+\newmdtheoremenv{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\school}[1]{\hfill{\mbox{#1}}}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+
+\addbibresource{algorithms.bib}
+\title{Algorithmic Problems in Graduate School Entrance Exams}
+%\author{Yu-Han Lyu}
+\date{\today}
+\begin{document}
+%\maketitle
+%\include{preface}
+%\tableofcontents
+%\listofexercises
+%\listoftables
+%\listoffigures
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\include{chapter6}
+\end{document}

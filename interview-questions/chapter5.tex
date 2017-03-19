@@ -1,0 +1,151 @@
+\chapter{Math problems}
+
+\section{Combinatorics}
+\begin{Exercise}
+Given four positive integers, $n$, $k$, $l$, and $h$, enumerate all possible $k$-tuple $(x_1, \dots, x_k)$ such that 
+\begin{enumerate}
+\item $x_i < x_{i + 1}$ for all $0 \leq i < k$.
+\item $l \leq x_i \leq h$ for all $0 \leq i \leq k$.
+\item $n = \sum_{i=1}^k x_i$.
+\end{enumerate}
+\end{Exercise}
+\begin{Answer}
+One simple solution is to use backtracking directly. 
+However, since lower-bound and upper-bound constraints exist, the backtracking may encounter dead end and this may slow down the enumeration.
+
+A method is called \emph{backtrack-free} if whenever we assign a value to a variable, a feasible solution always exists.
+A backtrack-free method can be designed based on the following fact: for four positive integers $n$, $k$, $l$, and $h$, a feasible partition of $n$ into $k$ parts exists if and only if 
+\[ k \cdot l + {{k-1}\choose{2}} \leq n \leq k \cdot h - {{k-1}\choose{2}}. \]
+\begin{remark}
+This solution is from Riha and James' paper~\cite{Riha1976}. One special case of this problem appears on \href{https://leetcode.com/problems/combination-sum-iii/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Subset}
+\begin{enumerate}
+\item generating the \href{https://en.wikipedia.org/wiki/Power_set}{power set}: This problem appears on \href{https://leetcode.com/problems/subsets/}{LeetCode}.
+\end{enumerate}
+
+\subsection{Combination}
+\begin{enumerate}
+\item combination: $n\choose{k}$ can be computed efficiently~\cite{Manolopoulos02}. This problem appears on \href{https://leetcode.com/problems/unique-paths/}{LeetCode}.
+\item all \href{https://en.wikipedia.org/wiki/Combination}{combinations}: all combinations can be generated efficiently in lexical order by using \href{https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications}{Gosper's Hack}. Loopless algorithm exists (not in lexical order)~\cite{Ruskey2009}. This problem appears on \href{https://leetcode.com/problems/combinations/}{LeetCode}.
+\end{enumerate}
+
+\subsection{Permutation}
+\begin{enumerate}
+\item all \href{https://en.wikipedia.org/wiki/Permutation}{permutations}: all permutations can be generated efficiently (not in lexical order) by using \href{https://en.wikipedia.org/wiki/Heap\%27s_algorithm}{Heaps' algorithm}. This problem appears on \href{https://leetcode.com/problems/permutations/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Permutation#Generation_in_lexicographic_order}{next permutation}: this problem appears on \href{https://leetcode.com/problems/next-permutation/}{LeetCode}. The problem of finding the previous permutation appears on \href{http://www.lintcode.com/en/problem/previous-permutation/}{LintCode}.
+\item rank of a permutation in lexical order: this problem can be solved by using \href{https://en.wikipedia.org/wiki/Lehmer_code#Encoding_and_decoding}{Lehmer code}. Linear time algorithm exists~\cite{Mares2007}. This problem appears on \href{http://www.lintcode.com/en/problem/permutation-index/}{LintCode}. 
+\item unrank to a permutation in lexical order: this problem appears on \href{https://leetcode.com/problems/permutation-sequence/}{LeetCode}.
+\item all permutations for a multi-set: loopless algorithm with constant space usage exists (not in lexical order)~\cite{Williams2009}. This problem appears on \href{https://leetcode.com/problems/permutations-ii/}{LeetCode}.
+\item rank of a permutation for a multi-set in lexical order: this problem appears on \href{http://www.lintcode.com/en/problem/permutation-index-ii/}{LintCode}.
+\end{enumerate}
+
+\subsection{Catalan number}
+\begin{enumerate}
+\item all parentheses: loopless algorithm with constant space usage exists~\cite{Ruskey2008}. This problem appears on \href{https://leetcode.com/problems/generate-parentheses/}{LeetCode}.
+\item all binary search trees: this problem appears on \href{https://leetcode.com/problems/unique-binary-search-trees-ii/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Catalan_number}{Catalan number}: this problem appears on \href{https://leetcode.com/problems/unique-binary-search-trees/}{LeetCode}.
+\end{enumerate}
+
+\section{Arithmetic}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Exponentiation_by_squaring}{exponentiation by squaring}: this problem appears on \href{https://leetcode.com/problems/powx-n/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Multiplication_algorithm}{integer multiplication}: this problem appears on \href{https://leetcode.com/problems/multiply-strings/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Digital_root}{digital root}: this problem appears on \href{https://leetcode.com/problems/add-digits/}{LeetCode}.
+\end{enumerate}
+
+\section{Numerical}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Horner\%27s_method}{Horner's method}: this problem appears on \href{http://www.lintcode.com/en/problem/hash-function/}{LintCode}.
+\item \href{https://en.wikipedia.org/wiki/Integer_square_root}{integer square root}: this problem appears on \href{https://leetcode.com/problems/sqrtx/}{LeetCode}.
+\item compute the digits of $\pi$:  digits of $\pi$ can be computed by using \href{https://en.wikipedia.org/wiki/Spigot_algorithm}{Spigot algorithm}~\cite{Gibbons2006}.  This problem appears on \href{https://www.codeeval.com/public_sc/228/}{CodeEval}.
+\end{enumerate}
+
+\section{Number theory}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes}{sieve of Eratosthenes}: this problem appears on \href{https://leetcode.com/problems/count-primes/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Repeating_decimal#Reciprocals_of_integers_not_co-prime_to_10}{repeating decimal}: this problem appears on \href{https://leetcode.com/problems/fraction-to-recurring-decimal/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Regular_number#Algorithms}{regular number}: this problem appears on \href{https://leetcode.com/problems/ugly-number-ii/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Happy_number}{happy number}: this problem appears on \href{https://leetcode.com/problems/happy-number/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Lagrange\%27s_four-square_theorem}{Lagrange's four-square theorem}: this problem appears on \href{https://leetcode.com/problems/perfect-squares/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Palindromic_number}{palindromic number}: this problem appears on \href{https://leetcode.com/problems/palindrome-number/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Narcissistic_number}{narcissistic number}: this problem appears on \href{https://www.codeeval.com/open_challenges/82/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Lychrel_number}{Lychrel number}: this problem appears on \href{https://www.codeeval.com/public_sc/45/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Palindromic_prime}{palindromic prime}: this problem appears on \href{https://www.codeeval.com/open_challenges/3/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Self-descriptive_number}{self-descriptive number}: this problem appears on \href{https://www.codeeval.com/open_challenges/40/}{CodeEval}.
+\end{enumerate}
+
+\section{Bitwise operations}
+
+\begin{Exercise}
+Given an array $A$ of distinct $n - k$ positive integers, where $A[i] < n$ for all $0 \leq i < n - k - 1$, design an algorithm to find the $k$ positive integers that are smaller than $n$ but not in $A$.
+\end{Exercise}
+\begin{Answer}
+Let $x_1, \dots, x_k$ be the missing numbers. 
+By scanning through $A$, $b_h = \sum_{i=1}^k x_i^h$ can be computed, for all $1 \leq h \leq k$. 
+Then, using \href{https://en.wikipedia.org/wiki/Newton\%27s_identities}{Newton's identities}, a polynomial $P(x)$ can be constructed, such that the roots of $P$ are $x_1, \dots, x_k$. 
+Finally, the roots can be obtained by either factoring $P$ or evaluating $P$ on all integers between zero and $n - 1$ 
+In order to reduce the space usage, all operations are performed in the ring $Z_p$, where $p$ is a prime, $n \leq p \leq 2n$. The resulting algorithm uses only one-pass.
+\begin{remark}
+This solution is from the paper of Minsky \textit{et al.}~\cite{Minsky2003}. This problem is mentioned in Muthukrishnan's textbook of streaming algorithms~\cite{Muthukrishnan2005}.\footnote{\url{http://stackoverflow.com/questions/3492302/easy-interview-question-got-harder-given-numbers-1-100-find-the-missing-numbe}.} The special case of $k = 1$ appears on \href{https://leetcode.com/problems/missing-number/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\begin{Exercise}
+Suppose that all integers are represented by $w$ bits in a computer.
+All integer arithmetics ($+$, $-$, $\times$, $/$) and all bitwise operations $\text{and}, \text{or}, \text{xor}, \text{nor}$ can be done in $O(1)$ time.
+Given an integer $x$, compute $\lfloor \lg x \rfloor$.
+\end{Exercise}
+\begin{Answer}
+$\lfloor \lg x \rfloor$ can be computed in $O(\lg w)$ time by using a binary search, but this method involves $O(\lg w)$ branches.
+Since comparison may be expensive for some architectures, using branches is not desirable.
+\paragraph{A better solution}
+The idea is to normalize $x$ into an integer that has exactly one set bit in the binary representation, and the answer can found by table lookup.
+Specifically, an integer $z =  2^{\lfloor \lg x \rfloor + 1}$ will be created.
+
+First, set all bits that are on the right of the most significant bit to one. 
+This can be done by using the following operations (in C language) assuming $w = 32$:
+\begin{minted}{c}
+y = x;
+y |= y >> 1;
+y |= y >> 2;
+y |= y >> 4;
+y |= y >> 8;
+y |= y >> 16;
+\end{minted}
+In the end, $y =  2^{\lfloor \lg x \rfloor + 1} - 1$.
+Let $z = y + 1 = 2^{\lfloor \lg x \rfloor + 1}$.
+Since $z$ has only one set bit in the binary representation, we can find the number of trailing zeros of $z$, which is $\lfloor \lg x \rfloor$ by using a \href{https://en.wikipedia.org/wiki/De_Bruijn_sequence}{De Bruijn sequence} as follows:
+\begin{minted}{c}
+static const int MultiplyDeBruijnBitPosition[32] = 
+{
+  0, 9, 1, 10, 13, 21, 2, 29, 11, 14, 16, 18, 22, 25, 3, 30,
+  8, 12, 20, 28, 15, 17, 24, 7, 19, 27, 23, 6, 26, 5, 4, 31
+};
+r = MultiplyDeBruijnBitPosition[(z * 0x07C4ACDDU) >> 27];
+\end{minted}
+\subparagraph{Complexity analysis} This method uses $O(\lg w)$ operations without any branch.
+\begin{remark}
+This solution is from \href{https://graphics.stanford.edu/~seander/bithacks.html}{Bit Twiddling Hacks}. Leiserson \emph{et al.} design an algorithm to find the index of the most significant bit by using a De Bruijn sequence~\cite{Leiserson1998}. Find the number of trailing zeros of an integer can be done in $O(1)$ time~\cite{Fredman1990}. This problem appears on \href{https://leetcode.com/problems/bitwise-and-of-numbers-range/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Hamming_weight}{Hamming weight}: this problem appears on \href{https://leetcode.com/problems/number-of-1-bits/}{LeetCode}.
+\item reverse bits: this problem can be solved in $O(\lg w)$ time.\footnote{\url{https://graphics.stanford.edu/~seander/bithacks.html\#ReverseParallel}.} This problem appears on \href{https://leetcode.com/problems/reverse-bits/}{LeetCode}.
+\end{enumerate}
+
+\section{Other problems}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Fibonacci_number}{Fibonacci number}: this problem can be solved in $O(\lg n)$ time~\cite{Shortt1978}. The problem of finding the $(n+1)$-th Fibonacci number appears on \href{https://leetcode.com/problems/climbing-stairs/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Gray_code}{Gray code}: this problem appears on \href{https://leetcode.com/problems/gray-code/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Look-and-say\_sequence}{look-and-say sequence}: $O(\lg n)$-time algorithm exists.\footnote{\url{http://www.njohnston.ca/2010/10/a-derivation-of-conways-degree-71-look-and-say-polynomial/}.} This problem appears on \href{https://leetcode.com/problems/count-and-say/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Thue\%E2\%80\%93Morse_sequence}{Thue-Morse sequence}: this problem appears on \href{https://www.codeeval.com/open_challenges/125/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Josephus_problem}{Josephus problem}: this problem appears on \href{https://www.codeeval.com/open_challenges/75/}{CodeEval}.
+\end{enumerate}
+
+
+\printbibliography[heading=subbibliography]

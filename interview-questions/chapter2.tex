@@ -1,0 +1,119 @@
+\chapter{Problems on strings}
+A string is a sequence of characters.
+\paragraph{Notation}
+For a string $S$ of length $n$, $S[0], \dots, S[n - 1]$ denotes $S$'s characters in order, and $S[i \dots j]$ denotes the substring starting at $i$ ending at $j$.
+For two strings $S$ and $T$, $S + T$ denotes the concatenation of $S$ and $T$.
+
+\section{Determine properties}
+In this section, we focus on the problems of determining properties of a given string.
+
+\begin{Exercise}[title=Cyclic equality]
+Two strings $S$ and $T$ are \emph{cyclic-equivalent} if $S$ can be transformed into $T$ by shift circularly.
+That is, for some index $i$, $S[i\dots n - 1] + S[0 \dots i - 1]$ equals $T$.
+Given two strings $S$ and $T$ of the same length $n$, design an algorithm to determine whether $S$ and $T$ are cyclic-equivalent.
+\end{Exercise}
+
+\begin{Answer}
+For a string $A$, we use $A^i$ to denote the string of rotating $A$ to the left by $i$ positions circularly; that is $A^i = A[i \dots n - 1] + A[0 \dots i - 1]$.
+The \emph{lexicographically minimal string} of a string $A$ is $\min_i A^i$ with respect to the lexicographical order.
+
+Let $S^*$ and $T^*$ be the lexicographically minimal strings of $S$ and $T$ respectively.
+The algorithm is based on the following observation:
+strings $S$ and $T$ are cyclic-equivalent if and only if $S^* = T^*$.
+
+Let $D_S$ be the set of indices $i$ that $S^i$ is larger than $T^j$ for some $j$; that is, $D_S = \{ i \mid \exists_j T^j < S^i \}$.
+Similarly, $D_T$ can be defined.
+Note that $S$ and $T$ are not cyclic-equivalent, if and only if both $D_S$ or $D_T$ contains $\{0, \dots, n - 1\}$.
+The idea is to compute $D_S$ and $D_T$ incrementally and test whether $D_S$ or $D_T$ contains $\{0, \dots, n - 1\}$.
+
+The computation of $D_S$ is based on the following fact: if $S[i + l] = T[j + l]$ for all $0 \leq l < k $ and $S[i + k] < T[i + k]$ for some $k$, then $S^{i + l} < T^{i + l}$ for all $0 \leq l \leq k$.
+Thus, for a give pair of indices $(i, j)$, the algorithm finds the largest $k$ such that $S[i + l] = T[j + l]$ for all $0 \leq l < k $ and $T[i + k] < S[i + k]$, then $D_S$ must contain $\{ i \dots i + k\}$.
+Repeatedly apply this rule to compute both $D_S$ and $D_T$.
+
+\subparagraph{Complexity analysis} The time complexity is $O(n)$ and the space complexity is $O(1)$.
+
+\begin{remark}
+This solution is from Shiloach's paper~\cite{Shiloach1979}.\footnote{\url{http://stackoverflow.com/a/31001317/1260984}.}
+Another approach is to find the \href{https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation}{lexicographically minimal string rotation} directly.
+Since lexicographically minimal string rotation can be found in linear time using $O(1)$ space, this problem can be solved in linear time using $O(1)$ space.
+This problem appears on \href{https://www.codeeval.com/open_challenges/76/}{CodeEval}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+Here are some other problems:
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/String_searching_algorithm}{string matching}: this problem can be solved in linear time using constant space~\cite{Rytter2003}. This problem appears on \href{https://leetcode.com/problems/implement-strstr/}{LeetCode}.
+\item credit card number validation: a credit card can be verified by using \href{https://en.wikipedia.org/wiki/Luhn_algorithm}{Luhn algorithm}. This problem appears \href{https://www.codeeval.com/open_challenges/172/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Pangram}{pangram}: this problem appears on \href{https://www.codeeval.com/public_sc/37/}{CodeEval}.
+\item \href{https://en.wikipedia.org/wiki/Anagram}{anagram}: this problem appears on \href{https://leetcode.com/problems/valid-anagram/}{LeetCode}.
+\end{enumerate}
+
+\section{Find substring(s)}
+
+\begin{enumerate}
+\item minimum palindromic factorization: given a string $S$ of length $n$, partition $S$ into the minimum number of substrings such that each substring is a palindrome.
+That is, find the minimum number of substrings $S_1 \dots S_k$ such that $S = S_1 + \dots + S_k$ and each $S_i$ is a palindrome. This problem can be solved in $O(n \lg n)$ time~\cite{Fici2014,Rubinchik2015}.
+This problem appears on \href{https://leetcode.com/problems/palindrome-partitioning-ii/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Longest_palindromic_substring}{longest palindromic substring}: given a string $S$ of length $n$, the longest palindromic substring can be found in linear time using \href{https://en.wikipedia.org/wiki/Longest_palindromic_substring#Manacher.27s_algorithm}{Manacher's algorithm}.
+This problem appears on \href{https://leetcode.com/problems/longest-palindromic-substring/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Longest_common_substring_problem}{longest common substring}: given two strings $S$ and $T$, the longest common substring can be found in linear time using a \href{https://en.wikipedia.org/wiki/Longest_common_substring_problem}{generalized suffix tree}. This problem appears on \href{http://www.lintcode.com/en/problem/longest-common-subsequence/}{LintCode}.
+\item \href{https://en.wikipedia.org/wiki/Rolling_hash}{rolling hash}: this problem appears on \href{https://leetcode.com/problems/repeated-dna-sequences/}{LeetCode}.
+\end{enumerate}
+
+\section{Approximate string matching}
+\begin{Exercise}[title=Wildcard matching]
+Let \verb+`.'+ be a wildcard character that can match any single character and \verb+`*'+ be a wildcard character that can match any sequence of characters.
+Given a string $T$ of length $n$ and a pattern $P$ of length $m$ in which $P$ may contain wildcard characters, design an algorithm to determine whether $P$ matches $T$.
+\end{Exercise}
+\begin{Answer}
+Since the wildcard \verb+`*'+ can match any sequence of characters, our idea is to partition the pattern into several sub-patterns separated by \verb+`*'+, and match each sub-pattern independently.
+
+Without loss of generality, we assume that $P[0]$ and $P[m - 1]$ are \verb+`*'+'s.
+Suppose that $P$ contains $k + 1$ \verb+`*'+'s. 
+The string $P$ can be partitioned into $k$ sub-patterns, $S_1, \dots, S_{k}$, and $k - 1$ \verb'*''s such that $P = \text{\texttt{*}}  + S_1 + \text{\texttt{*}} + \dots + \text{\texttt{*}} + S_{k} + \text{\texttt{*}}$, and each sub-pattern $S_i$ has no \verb+`*'+ wildcard.
+
+Consider the first two sub-patterns $S_1$ and $S_2$.
+Let $i_1$ be the smallest index that $T[i_1 \dots i_1 + \abs{S_1} - 1]$ matches $S_1$.
+Since match $S_1$ and $S_2$ should be matched in order, $S_2$ can only be matched to a substring starting after $i_1 + \abs{S_1} - 1$.
+Moreover, since a \verb+`*'+ wildcard appears between $S_2$ and $S_3$, it suffices to find the smallest $i_2 \geq i_1 + \abs{S}$ that $T[i_2 \dots i_2 + \abs{S_2} - 1]$ matches $S_2$.
+Let $i_j$ be the smallest index at least $i_{j-1} + \abs{S_{j-1}}$ that $T[i_j \dots i_j + \abs{S_j} - 1]$ matches $S_j$.
+If all $i_j$'s are well-defines, then we found a match.
+Thus, the crucial part of this problem is as follows: given a pattern $S$ without a \verb+`*'+ wildcard, find the first match of $S$ in $T$.
+
+Let $S$ be a pattern without a \verb+`*'+ wildcard. 
+Suppose that all characters in the alphabet are represented by positive integers, and the wildcard \verb+`.'+ is represented by zero. 
+Then, for each start position $i$ in $T$, the expression $\sum_{j=0}^{m-1} S[j] T[i + j] (S[j] - T[i + j])^2$ is zero if and only if $S$ matches $T[i \dots \abs{S}]$. 
+The expressions for all start positions can be evaluated in $O(n \lg n)$ time by using the fast Fourier transform.
+
+In order to reduce the time complexity to $O(n \lg \abs{S})$, we create $h = \frac{n}{\abs{S}}$ overlapping substrings of $T$, $T_1, \dots, T_h$, where $\abs{T_a} = 2m$ for all $1 \leq a \leq h$, $T_1$ is a prefix of $T$, and the first $m$ characters of $T_a$ is the same as the last $m$ characters of $T_{a - 1}$ for all $1 < a \leq h$.
+We evaluate the expressions in the order of $T_1, \dots, T_h$ and the time complexity is $O(n \lg \abs{S})$.
+Moreover, the index $i$ of the first match can be computed in $O((i + \abs{S}) \lg \abs{S})$.
+
+\subparagraph{Complexity analysis} The time complexity is $O(n \lg \abs{S})$.
+\begin{remark}
+This solution is from Clifford and Clifford's paper~\cite{Clifford2007}.
+This problem appears on \href{https://leetcode.com/problems/wildcard-matching/}{LeetCode}.
+\end{remark}
+\end{Answer}
+
+\subsection{Other problems}
+Here are other problems:
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Edit_distance}{edit distance}: this problem can be solved in $O(\frac{nm}{\lg m})$ time by using \href{https://en.wikipedia.org/wiki/Method_of_Four_Russians}{four Russians method}. This problem appears on \href{https://leetcode.com/problems/edit-distance/}{LeetCode}.
+\item \href{https://en.wikipedia.org/wiki/Longest_common_subsequence_problem}{longest common subsequence}: this problem appears on \href{http://www.lintcode.com/en/problem/longest-common-subsequence/}{LintCode}.
+\end{enumerate}
+
+\section{Regular expression}
+\begin{enumerate}
+\item \href{https://en.wikipedia.org/wiki/Regular_expression}{regular expression}: given a string $S$ and a regular expression $R$, test whether $S$ can be matched to $R$. This problem can be solved by using \href{https://en.wikipedia.org/wiki/Thompson\%27s_construction_algorithm}{Thompson's algorithm}. Special case of this problem appears on \href{https://leetcode.com/problems/regular-expression-matching/}{LeetCode}.
+\item e-mail validation: given a string $S$, test whether $S$ is a valid e-mail address. A complete solution can be found \href{http://ex-parrot.com/~pdw/Mail-RFC822-Address.html}{here}. This problem appears on \href{https://www.codeeval.com/open_challenges/35/}{CodeEval}.
+\end{enumerate}
+
+\section{Decode}
+\begin{enumerate}
+\item inverse \href{https://en.wikipedia.org/wiki/Burrows\%E2\%80\%93Wheeler_transform}{Burrows-Wheeler transform}: this problem appears on \href{https://www.codeeval.com/open_challenges/184}{CodeEval}.
+\item decode \href{https://en.wikipedia.org/wiki/Vigen\%C3\%A8re_cipher}{Gronsfeld cipher}: this problem appears on \href{https://www.codeeval.com/open_challenges/181/}{CodeEval}.
+\end{enumerate}
+
+\printbibliography[heading=subbibliography]

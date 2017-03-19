@@ -1,0 +1,46 @@
+\documentclass{book}[12pt]
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{minted}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage[backend=biber,url=true,maxbibnames=99,doi=true,backref=true,hyperref=true,refsection=chapter,style=numeric-verb,citestyle=numeric,abbreviate=false,alldates=long,dateabbrev=false]{biblatex}
+\usepackage{doi}
+\usepackage{hyperref}
+\hypersetup{
+     colorlinks   = true,
+     citecolor    = blue
+}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{tikz}
+\usepackage{exercise}
+\usepackage[T1]{fontenc}
+\usepackage{lettrine}
+\usepackage{mdframed}
+\def\ExerciseName{Problem}
+
+\newmdtheoremenv{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\DeclareMathOperator{\sign}{sgn}
+
+\addbibresource{algorithms.bib}
+\title{Programming Interview Questions}
+%\author{Yu-Han Lyu}
+\date{\today}
+\begin{document}
+%\maketitle
+%\include{preface}
+%\tableofcontents
+%\listofexercises
+%\listoftables
+%\listoffigures
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\end{document}

@@ -1,0 +1,19 @@
+\chapter{Complexity theory}
+
+\section{NP-completeness}
+
+
+\section{Approximation algorithms}
+\begin{Exercise}[origin={NCU CSIE 100},title={Christofides algorithm}]
+Let $V$ be a set of $n$ points in the plane. Let $G = (V, E)$ be the complete graph over $V$, and the weight of each edge $e \in E$ is the length of this edge. The Euclidean Traveling Salesman Problem (ETSP) of $V$ is to find the cycle $C^*$ such that $C^*$ visits each node exactly once, and it has the minimum weight among all such cycles. Let $T^*$ be a minimum spanning tree of $G$.
+\begin{enumerate}
+\item Show that $w(T^*) \leq w(C^*)$, where $w(X)$ is the weight of a subgraph $X$ of $G$.
+\item Given $T^*$, design an algorithm to compute a cycle $C$ that is a $2$-approximation of the optimal ETSP cycle $C^*$. Namely, $w(C^*) \leq w(C) \leq 2w(C^*)$. (Hint: first show that $w(T^8) \leq w(C^*) \leq 2w(T^*)$.)
+\end{enumerate}
+\school{[NCU CSIE 100]}
+\end{Exercise}
+\begin{Answer}
+This algorithm is called \href{https://en.wikipedia.org/wiki/Christofides_algorithm}{Christofides algorithm}.
+\end{Answer}
+
+\printbibliography[heading=subbibliography]
