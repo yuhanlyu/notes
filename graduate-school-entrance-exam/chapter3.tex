@@ -146,7 +146,7 @@ Given an undirected graph $G = (V, E)$ with $n = \abs{V}$ vertices, four vertice
 \begin{Answer}
 Finding a $4$-cycle is the same as finding two vertices with two common neighbors. For each vertex $v$, enumerate all pairs of $v$'s pair. During the enumeration, if a pair is enumerated twice, then a $4$-cycle must exist. Since there are at most $O(n^2)$ pairs of vertices, the time complexity is $O(n^2)$.
 \begin{remark}
-For any even number $k$, finding a cycle of length $k$ can be done in $O(n^2)$ time~\cite{Yuster1997}. Finding a path of length at least $k$ > 0 can be done in $O^*(k^2)$~\cite{Williams2009}.
+For any even number $k$, finding a cycle of length $k$ can be done in $O(n^2)$ time~\cite{Yuster1997}. Finding a path of length at least $k$ > 0 can be done in $O^*(k^2)$~\cite{RWilliams2009}.
 \end{remark}
 \end{Answer}
 
