@@ -1,0 +1,276 @@
+\chapter{Binary search tree \& related data structures}
+\section{Binary search tree (BST)}
+\href{https://en.wikipedia.org/wiki/Binary_search_tree}{Binary search tree} is a common implementation of \href{https://en.wikipedia.org/wiki/Associative_array}{associative arrays} that store elements from an ordered set while supporting the following operations:
+\begin{enumerate}
+    \item Find: look up an element in the data structure.
+    \item Insert: insert an element.
+    \item Delete: delete an element. There are two ways to define the deletion: remove a given element or a given handle (i.e.\ tree node). When the type of deletion is not specified, deletion refers to the former in this chapter.
+\end{enumerate}
+
+Although all of the above operations can be supported by a hash table efficiently, there are some  operations that cannot be supported by hash table efficiently but can be supported by binary search tree efficiently.
+\begin{enumerate}
+    \item Upper bound: find the smallest element in the data structure that is larger than a given key.
+    \item Lower bound: find the larger element in the data structure that is smaller than a given key.
+    \item Rank: for a given positive integer $k$, find the $k$-th smallest element in the data structure.
+\end{enumerate}
+
+Since the tree height of an ordinary binary search tree is $O(n)$ in the worst case, many \href{https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree}{self-balancing binary search trees} are designed.
+
+Self-balancing binary search tree's nodes usually contain the following information:
+\begin{enumerate}
+    \item Data: the data must come from an ordered set.
+    \item Left, Right: the pointers pointing to the left and right subtrees respectively.
+    \item Parent: the pointer pointing to the parent tree node, but this field is optional.
+    \item Auxiliary information: the additional information needs to be maintained in order to maintain balanced. Some self-balancing binary search trees (like splay tree and scapegoat tree) do not need auxiliary information.
+\end{enumerate}
+
+When evaluating the performance for self-balancing binary search trees, we usually analyze from the following aspects:
+\begin{enumerate}
+    \item Type of guarantee: the guarantee can be worst case, amortized, or expected.
+    \item Time complexity: the running time for each operation.
+    \item Space usage per element: the additional space required to maintain auxiliary information.
+\end{enumerate}
+
+Since many self-balancing binary search trees provide the same time complexity with the same guarantee, we can further compare the performance of these trees from the following aspects:
+\begin{enumerate}
+    \item Space complexity: the space usage to perform the operation. If the algorithm is recursive, then the space usage will be $\Omega(\lg n)$. Thus, in order to save space, iterative algorithm is preferable.
+    \item Number of passes: the maximum number of time a node can be `traversed'. Traditionally, top-down algorithm means that each node is traversed only once from root to the leaf, while bottom-up algorithm means that each node is traversed twice from root to the leaf and from leaf to the root.
+    \item Parent pointer: using parent pointer makes implementation easier since a recursive algorithm, which requires $\Omega(\lg n)$ space, can be easily transformed into an iterative algorithm, which uses $O(1)$ space, although each node consumes more space. Most standard libraries use parent pointers, since without pointer, iterator cannot be implemented efficiently.
+    \item Cost of rebalance: the number of operations need to be done after inserting or deleting a node. In other words, when the insert or delete position is known, the time complexity of insert or delete operations. This is important for C++'s \texttt{std::set}, since the \texttt{insert} and \texttt{erase} methods of \texttt{std::set} can take hint, which is a guess of insert or delete position. Since the standard requires that when the hint is correct, the running time must be amortized $O(1)$, \texttt{std::set} can only be implemented by red-black tree or WAVL tree.
+    \item Duplication/non-existence detection: when inserting an element already in the tree or deleting an element not in the tree, whether the algorithm can report it. For certain trees, one more pass is necessary to detect or recover from such a situation.
+\end{enumerate}
+
+\subsection{Properties}
+The tree height of BST is $O(n)$ in the worst case. However, when the elements are inserted from a random permutation, the following properties can be shown:
+\begin{enumerate}
+    \item The average height is $\alpha \ln n - \beta \ln \ln n + O(1)$, where $\alpha \approx 4.311$ and $\beta \approx 1.953$~\cite{Reed2003}.
+    \item The variance of the average height is $O(1)$~\cite{Drmota2003}.
+\end{enumerate}
+
+\subsection{Rebalancing of a BST}
+Transforming an arbitrary BST into a perfectly balanced BST can be done in linear time using 
+\href{https://en.wikipedia.org/wiki/Day%E2%80%93Stout%E2%80%93Warren_algorithm}
+{Day-Stout-Warren algorithm}, which uses $2n - \lceil \lg n \rceil$ comparisons. The number of comparisons can be reduced to $2n - 2 \lceil \lg n \rceil$~\cite{Luccio2016}.
+
+\section{AVL tree}
+\href{https://en.wikipedia.org/wiki/AVL_tree}{AVL tree} is a self-balancing binary search tree that the difference of heights of left and right subtrees is bounded by one.
+
+The balancing information stored in each node can be one of the following:
+\begin{enumerate}
+    \item Height: each node maintains the height of the subtree rooted at this node. This approach is easier to implement, but each insert and delete inherently requires two passes since all heights of nodes along the search path need to be updated.
+    \item Balance factor: since the difference of the heights of subtrees is bounded by one, each node can use two bits to store the difference, which is called \emph{balance factor}. 
+    \item Height difference between node and it's parent: given children's height difference, the balance factor can be computed easily. For a node without two children, since the balance factor can be computed in $O(1)$ time, no information needs to be stored. Since height difference is either 1 or 2, the height difference can be represented by one bit~\cite{Brown1978}. One way to reduce the space usage is to swap left and right links when the bit is 1.
+\end{enumerate}
+
+Both insert and delete operations can be performed in $O(\lg n)$ time. Moreover, the insertion requires at most 2 rotations, while the deletion might need $O(\lg n)$ rotations.
+
+When balance factor is stored in the tree node, the insertion can be done in $O(1)$ space in the following manner. During insertion, a node is called the \emph{safe node} if it is the lowest node along the search path from root to the inserted node with non-zero balance factor. Note that if rotation occurs after insertion, the rotation can only occurs at the safe node. Moreover, if one node's balance factor is changed after insertion, then this node must be between the safe node and the inserted node along the search path. Thus, we can first find the safe node using one traversal. Then, rotate and update balance factors accordingly from the safe node to the inserted node.
+
+\subsection{Properties}
+\begin{enumerate}
+    \item For an arbitrary AVL tree, a sequence of $n$ deletions takes $\approx 1.618m = O(n)$ time~\cite{Tsakalidis1985}. From an empty AVL tree, a sequence of $n$ insertions takes $\approx 2.26n = O(n)$ time~\cite{Mehlhorn1986}. Alternating insertions and deletions in an $n$-node AVL tree can cause $O(\lg n)$ rotations in each deletion~\cite{Amani2016}.
+    \item It is possible to enforce the balance factor to be either 0 or 1, i.e.\ -1 is not allowed. Both insertion and deletion can be done in $O(\lg n)$ time, although the algorithm is impractical~\cite{Zweben1978,Raiha1979}.
+    \item If elements are inserted into an AVL in the sorted order, the resulting AVL tree is a perfectly balanced binary search tree~\footnote{\url{https://11011110.github.io/blog/2015/07/25/when-avl-trees.html}}.
+    \item The deletion can be done in $O(1)$ space using link reversal technique~\cite{Chen1986}.
+\end{enumerate}
+
+\section{Red-black tree}
+\href{https://en.wikipedia.org/wiki/Red%E2%80%93black_tree}{Red-black tree} is a self-balancing binary search tree that can represent a 2-3-4 tree as a binary tree.
+\begin{enumerate}
+    \item Each node is either red or black.
+    \item Red node cannot have a red child.
+    \item External nodes are black.
+    \item All paths from root to the external nodes have equal number of black nodes.
+\end{enumerate}
+
+Each node needs one bit to store the color of the node. One way to reduce the space usage is to swap left and right links when the bit is 1.
+
+\subsection{History}
+\begin{enumerate}
+    \item 1972: A binary representation of B-tree is invented~\cite{Bayer1972}. The author designed bottom-up insert and delete methods that require $O(\lg n)$ rotations.
+    \item 1978: Red-black tree is invented~\cite{Guibas1978}. The authors designed top-down insert and delete methods that require $O(\lg n)$ rotations.
+    \item 1982: Half-balanced binary search tree is invented~\cite{Olivie1982}. The author designed bottom-up insert and delete methods, where insertion takes at most 2 rotations and deletion takes at most 3 rotations.
+    \item 1983: The equivalence between red-black tree and half-balanced binary search tree is proved~\cite{Tarjan1983}. Bottom-up insert and delete methods for red-black tree is explained, where insertion takes at most 2 rotations and deletion takes at most 3 rotations. Moreover, the rebalance process (including rotations, recoloring, and backtracking) is shown to be amortized $O(1)$ time due to the equivalence between red-black tree and 2-3-4 tree~\footnote{\url{https://cs.stackexchange.com/questions/52660/reb-black-tree-amortized-cost-of-the-rebalancing}}.
+    \item 1985: Top-down insert and delete methods with $O(1)$ amortized rebalancing time are designed~\cite{Tarjan1985}, although the number of rotations is not $O(1)$. This method also implies $O(1)$ space implementation of bottom-up insert and delete, which needs additional amortized $O(1)$ key comparisons.
+\end{enumerate}
+
+\subsection{Properties}
+\begin{enumerate}
+    \item Tree height is at most $2 \lg n$.
+    \item Both insert and delete operations can be done in $O(1)$ space using link reversal technique~\cite{Chen1996}.
+\end{enumerate}
+
+\subsection{Left-leaning red-black tree (LLRB)}
+\href{https://en.wikipedia.org/wiki/Left-leaning_red%E2%80%93black_tree}{Left-leaning red-black tree} is a variant of red-black tree that right link cannot point to a red node.
+
+Left-leaning red-black tree can represent 2-3-4 tree or 2-3 tree. However, the insert and delete methods require $O(\lg n)$ rotations, which is different from red-black tree. In addition, the deletion requires rotations on the way up and on the way down, so the performance is worse than red-black tree.
+
+\subsection{WAVL tree}
+\href{https://en.wikipedia.org/wiki/WAVL_tree}{WAVL tree} is a self-balancing binary search tree based on the following rank function:
+\begin{enumerate}
+    \item Every external node has rank 0.
+    \item Every leaf node has rank 1.
+    \item The difference of rank between parent and children is either 1 or 2.
+\end{enumerate}
+
+WAVL tree has all good properties that red-black tree has: amortized $O(1)$ time rebalancing, constant number of rotations in insert and delete operations. Moreover, the deletion of WAVL tree only requires 2 rotations, while red-black tree requires 3 rotations.
+
+In fact, AVL tree can be described by using another rank function -- tree height, and Red-black can also be described by using a different rank function -- black height. Thus, rank-based search is a pretty generic framework. WAVL tree stands for weak AVL tree, whose constraints are weaker than AVL but stronger than red-black tree. Every red-black trees is a WAVL trees, and every WAVL is an AVL tree.
+
+
+\section{Weight-balanced BST (WB)}
+\href{https://en.wikipedia.org/wiki/Weight-balanced_tree}{Weight-balanced tree} uses the sizes of each subtree as the balancing criterion. Let the weight of a tree be the size plus one. A binary search is \emph{weight-balanced} if for each node, the weight of the smaller subtree times $\Delta$ is greater than the weight of the larger subtree, where $\Delta$ is the balancing parameter.
+
+When inserting or deleting an element, since the resulting tree might be imbalanced, a rotation must be performed in order to rebalance the tree. 
+
+Consider a subtree rooted at node $x$, where all subtrees of $x$ are balanced except for $x$ itself. Suppose that the left subtree of $x$ is too small so that the balancing constraint is violated. In this case, a left rotation will be performed at $x$. 
+
+However, a single left rotation may not be sufficient. Let $r$ be the right subtree of $x$. The issue is that the left subtree of $r$, $rl$, may be larger than the right subtree of $r$, $rr$. After a single left rotation is done at $x$ and $r$ is promoted to be the root. The tree rooted at $r$ may still imbalanced.
+
+In order to remedy this issue, a single left rotation is performed when the weight of $rl$ is less than $\Gamma$ times the weight of $rr$, otherwise a double rotation is performed, where $\Gamma$ is another balancing parameter. The details of top-down insert and delete methods are described in~\cite{Lai1993}.
+
+\subsection{Properties}
+Since the weight of a tree is at least $\frac{\Delta}{\Delta - 1}$ larger than any subtree, the height of the tree is $\lg_{\frac{\Delta}{\Delta - 1}} (n + 1) = \frac{-1}{\lg \frac{\Delta - 1}{\Delta}} \lg (n + 1)$.
+Furthermore, rebalancing takes amortized $O(1)$ time~\cite{Blum1980}.
+The only valid integer pair of $(\Delta, \Gamma)$ is $(3, 2)$~\cite{Hirai2011}.
+
+\section{AA tree}
+\href{https://en.wikipedia.org/wiki/AA_tree}{AA tree} is a self-balancing binary search tree that is another representation of 2-3 tree. Insert and delete operations take $O(\lg n)$ time. The code is the simplest among all binary search tree with $O(\lg n)$ worst case guarantee.
+
+\section{Splay tree}
+\href{https://en.wikipedia.org/wiki/Splay_tree}{Splay tree} is a self-balancing binary search tree. Insert and delete operations take amortized $O(\lg n)$ time. The idea is to rotate the accessed node to the root.
+
+\section{Scapegoat tree}
+\href{https://en.wikipedia.org/wiki/Scapegoat_tree}{Scapegoat tree} is a self-balancing binary search tree. Insert and delete operations take amortized $O(\lg n)$ time. The idea is to rebuild part of the tree (rooted at \emph{scapegoat} when the tree becomes imbalance with respect to certain criterion. In the original paper, the rebuilding phase takes $O(\lg n)$ space, but the rebuilding can be done by using Day-Stout-Warren algorithm to achieve $O(1)$ space.
+
+\section{Treap}
+\href{https://en.wikipedia.org/wiki/Treap}{Treap} is a self-balancing binary search tree. Insert and delete operations take expected $O(\lg n)$ time. The idea is to assign each node a random real number between 0 and 1. In addition to the binary search tree constraints, the assigned random numbers of nodes also needs to satisfy heap property. Thus, a treap is always a random binary search tree if no collision of random number occurs. However, since real number is only represented by finite number of floating point numbers, there is no guarantee that collision won't occur. The original insert and delete methods are based on rotation.
+
+\subsection{Randomized binary search tree (RBST)}
+\href{https://en.wikipedia.org/wiki/Treap#Randomized_binary_search_tree}{Randomized binary search tree}  is a self-balancing binary search tree. Insert and delete operations take expected $O(\lg n)$ time. The idea is to always maintain the tree a random binary search tree. Unlike treap, which requires random number from an infinity set, RBST only needs random integers from a finite set. However, the number of random numbers required by RBST is more than treap.
+The original insert and delete methods are based on split and join, which can also be used in treap.
+
+\section{Skip list}
+\href{https://en.wikipedia.org/wiki/Skip_list}{Skip list} is a list like data structure. The idea is to build index structure probabilistically. Insert and delete operations take expected $O(\lg n)$ time. Unlike BST that will compare a given key with an element in the tree at most once, skip list might compare  the given key with an element in the skip list multiple time that leads to more number of comparisons.
+
+\subsection{Deterministic skip list (DSL)}
+Deterministic skip list is a derandomization version of skip list~\cite{Munro1992}. Insert and delete operations take $O(\lg n)$ time.
+
+\section{Summary}
+Tables~\ref{insert} and~\ref{delete} are summaries of the insertion/deletion operation of data structures assuming no parent pointers or link reversal technique are used. When parent pointers or link reversal technique is used, the space complexity of all operations can be reduced to $O(1)$.
+
+\begin{table}[!t]
+\begin{threeparttable}
+\begin{tabular}{cccccccc}
+ Name & Variant & Guarantee & Time & Space & \# Pass & Rebalancing & Error detection  \\
+ \hline
+ \multirow{4}{*}{Red-black tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{2} & $O(\lg n)$\tnote{1} & \multirow{2}{*}{Y} \\
+  & & Amortized & &  &  & $O(1)$ &  \\
+  \cline{2-8}
+  & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(\lg n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & & &  & $O(1)$\tnote{2} & \\
+  \hline
+  AVL & Bottom-up & Worst case & $O(\lg n)$ & $O(1)$ & 2 & $O(\lg n)$\tnote{3} & Y \\
+  \hline
+  \multirow{2}{*}{WAVL} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{2} & $O(\lg n)$\tnote{4} & \multirow{2}{*}{Y} \\
+  & & Amortized & & & & $O(1)$ & \\
+  \hline
+  LLRB & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
+  \hline
+  \multirow{2}{*}{WB} & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(\lg n)$ & \multirow{2}{*}{N\tnote{5}} \\
+  & & Amortized &  & & & $O(\lg n)$\tnote{6} &  \\
+  \hline
+  AA-tree & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
+  \hline
+  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & &  & & $O(\lg n)$ & \\
+   & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & &  & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$\tnote{7}} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & $O(\lg n)$ & & & $O(\lg n)$ & \\
+  \hline
+  \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
+  & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & & & & \\
+  \hline
+  DSL & & Worst case & $O(\lg n)$ & $O(1)$ & 1 & $O(\lg n)$ & Y \\
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item[1] Although the insertion rotates at most twice, the number of color flips is $O(\lg n)$.
+\item[2] Tarjan's version~\cite{Tarjan1985}. The original red-black top-down insertion does not have amortized $O(1)$ guarantee.
+\item[3] Although the insertion rotates at most twice, the number of changing balance factor is $O(\lg n)$.
+\item[4] Although the insertion rotates at most twice, the number of changing rank is $O(\lg n)$.
+\item[5] When a duplicated is inserted, one more pass is needed.
+\item[6] Although the number of rotations is amortized $O(1)$, maintaining the size of subtrees requires
+\item[7] Using Day-Stout-Warren algorithm to rebuild the tree.
+\end{tablenotes}
+\caption{Summary of insert operation of various data structures.}\label{insert}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!t]
+\begin{threeparttable}
+\begin{tabular}{cccccccc}
+ Name & Variant & Guarantee & Time & Space & \# Pass & Rebalancing & Error detection  \\
+ \hline
+ \multirow{4}{*}{Red-black tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{2} & $O(\lg n)$\tnote{1} & \multirow{2}{*}{Y} \\
+  & & Amortized & &  &  & $O(1)$ &  \\
+  \cline{2-8}
+  & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(\lg n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & & &  & $O(1)$\tnote{2} & \\
+  \hline
+  AVL & Bottom-up & Worst case & $O(\lg n)$ & $O(1)$ & 2 & $O(\lg n)$\tnote{3} & Y \\
+  \hline
+  \multirow{2}{*}{WAVL} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{2} & $O(\lg n)$\tnote{4} & \multirow{2}{*}{Y} \\
+  & & Amortized & & & & $O(1)$ & \\
+  \hline
+  LLRB & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
+  \hline
+  \multirow{2}{*}{WB} & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(\lg n)$ & \multirow{2}{*}{N\tnote{5}} \\
+  & & Amortized &  & & & $O(\lg n)$\tnote{6} &  \\
+  \hline
+  AA-tree & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
+  \hline
+  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & &  & & $O(\lg n)$ & \\
+   & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & &  & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$\tnote{7}} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & $O(\lg n)$ & & & $O(\lg n)$ & \\
+  \hline
+  \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
+  & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
+  \hline
+  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & & & & \\
+  \hline
+  DSL & & Worst case & $O(\lg n)$ & $O(1)$ & 1 & $O(\lg n)$ & Y \\
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item[1] Although the deletion rotates at most three times, the number of color flips is $O(\lg n)$.
+\item[2] Tarjan's version~\cite{Tarjan1985}. The original red-black top-down insertion does not have amortized $O(1)$ guarantee.
+\item[3] The number of rotations is $O(\lg n)$.
+\item[4] Although the insertion rotates at most twice, the number of changing rank is $O(\lg n)$.
+\item[5] When a duplicated is inserted, one more pass is needed.
+\item[6] Although the number of rotations is amortized $O(1)$, maintaining the size of subtrees requires $O(\lg n)$.
+\item[7] Using Day-Stout-Warren algorithm to rebuild the tree.
+\end{tablenotes}
+\caption{Summary of delete operation of various data structures.}\label{delete}
+\end{threeparttable}
+\end{table}
+
+\printbibliography[heading=subbibliography]

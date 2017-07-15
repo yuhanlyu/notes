@@ -3,6 +3,8 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+\usepackage{multirow}
 \usepackage[margin=1in]{geometry}
 \usepackage{microtype}
 \usepackage[backend=biber,maxbibnames=99,url=true,doi=true,backref=true,hyperref=true,refsection=chapter,style=numeric-verb,citestyle=numeric,abbreviate=false,alldates=long,dateabbrev=false]{biblatex}
@@ -31,14 +33,17 @@
 \begin{document}
 %\maketitle
 %\include{preface}
-%\tableofcontents
+\tableofcontents
 %\listofexercises
-%\listoftables
+\listoftables
 %\listoffigures
-\include{chapter1}
-\include{chapter2}
-\include{chapter3}
-\include{chapter4}
-\include{chapter5}
-\include{chapter6}
+\part{Problem Set}
+\include{analysis}
+\include{sequence}
+\include{graph}
+\include{geometry}
+\include{design}
+\include{complexity}
+\part{Further Information}
+\include{bst}
 \end{document}

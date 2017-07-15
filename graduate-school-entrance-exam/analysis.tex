@@ -21,7 +21,7 @@ Making assumptions can make the analysis easier.
 \Question If $T(n) = 49T(n/7) + n^2 \cos (\sqrt{n})$, please find the tight asymptotic order of $T(n)$.
 \end{Exercise}
 \begin{Answer}
-According to the definition of big O notation, we say $f(n) = O(g(n))$ if there exists constants $c$ and $n'$, such that $f(n) \leq cg(n)$ for all $n > n'$.
+According to the definition of big $O$ notation, we say $f(n) = O(g(n))$ if there exists constants $c$ and $n'$, such that $f(n) \leq cg(n)$ for all $n > n'$.
 
 For the first problem, we know that the $\sin$ function will fluctuate between $1$ and $-1$. Although $\frac{\sin n}{\lg n}$ will become very small when $n$ approaches infinity, we still cannot get constants $c$ and $n'$ such that $T(n) \leq cn^2$ for all $n > n'$.
 
@@ -29,7 +29,7 @@ For the second problem, we know that the $\cos$ function will fluctuate between 
 \end{Answer}
 
 \subsection{Master theorem}
-The most powerful technique in solving divide-and-conquer recurrence relation is the master theorem.
+\href{https://en.wikipedia.org/wiki/Master_theorem}{Master theorem} is the most powerful technique in solving divide-and-conquer recurrence relation.
 Several forms of the master theorem have been proven. Verma gives the following master theorem~\cite{Verma1994}:
 \begin{theorem}
 Let $T(n) = aT(n / b) + f(n)$ for all $n > 1$ and $T(1) = c$ for some constants $a \geq 1$, $b > 1$, $c > 0$, and non-negative function $f(n)$.
@@ -68,7 +68,7 @@ Since $\sum_{i=}^k i^{-2}$ is lower bounded by one and is upper bounded by $\sum
 \end{Answer}
 
 \subsection{Akra\--Bazzi method}
-The Akra and Bazzi method provides a more general way to solve divide-and-conquer recurrence relations~\cite{Akra1998}. The following version is from~\cite{Leighton1996}.
+\href{https://en.wikipedia.org/wiki/Binary_search_tree}{Akra--Bazzi} method provides a more general way to solve divide-and-conquer recurrence relations~\cite{Akra1998}. The following version is from~\cite{Leighton1996}.
 \begin{theorem}
 Let \[T(n) = 
 \begin{cases}
@@ -85,7 +85,7 @@ where
 Let $p$ be the unique solution for $\sum_{i=1}^k a_ib_i^p = 1$. Then
 \begin{enumerate}
 \item if $f(n) = O(n^{p-\epsilon})$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^p)$.
-\item if $f(n) = \Theta(n^{p})$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^p \lg n)$.
+\item if $f(n) = \Theta(n^{p})$, then $T(n) = \Theta(n^p \lg n)$.
 \item if $f(n) = \Omega(n^{p+\epsilon})$ and $f(n)/x^{p+\epsilon}$ is non-decreasing for some constant $\epsilon > 0$, then $T(n) = \Theta(f(n))$.
 \item $T(n) = \Theta\left(n^p\left(1 + \int_1^n \frac{f(u)}{u^{p+1}}du\right)\right)$.
 \end{enumerate}
@@ -110,6 +110,7 @@ Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently sma
 \Question $T(n) = 5T(\frac{n}{5}) + n/\lg n$. \label{ABmethod:1} \school{[NCTU CSIE 93]}
 \Question $T(n) = T(\frac{n}{2} + \sqrt{n}) + n$. \label{ABmethod:2} \school{[NTU CSIE 103]}
 \Question $T(n) = 4T(\frac{n}{5}) + T(\frac{n}{4}) + n$. \label{ABmethod:3} \school{[NCTU BIOINFO 93]}
+\Question $T(n) = T(\frac{n}{10}) + T(\frac{9n}{10}) + n$. \label{ABmethod:4} \school{[NTU CSIE 106]}
 \end{Exercise}
 \begin{Answer}
 \paragraph{Problem~\ref{ABmethod:1}} Suppose that $n = 5^k$. We have
@@ -128,7 +129,10 @@ Let $T(n) = \Theta(f(n))$. Assume that $T(n)$ is a constant for sufficiently sma
 \[ T(n) = \Theta( 1 (1 + \int_{1}^n (x / x) dx)) = \Theta(n). \]
 
 \paragraph{Problem~\ref{ABmethod:3}} apply the Akra\--Bazzi method. Set $k = 2$, $a_1 = 4$, $b_1 = 1/5$, $a_2 = 1$, $b_2 = 1/4$, and solve $p \approx 1.03$. Then, we get
-\[ T(n) = \Theta( n^{p}), \text{where} p \approx 1.03. \]
+\[ T(n) = \Theta( n^{p}), \text{where } p \approx 1.03. \]
+
+\paragraph{Problem~\ref{ABmethod:4}} apply the Akra\--Bazzi method. Set $k = 2$, $a_1 = 1$, $b_1 = 1/10$, $a_2 = 1$, $b_2 = 9/10$, and solve $p = 1$. Then, we get
+\[ T(n) = \Theta(n \lg n). \]
 
 \end{Answer}
 
