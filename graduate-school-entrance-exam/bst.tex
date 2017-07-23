@@ -141,7 +141,7 @@ The only valid integer pair of $(\Delta, \Gamma)$ is $(3, 2)$~\cite{Hirai2011}.
 \href{https://en.wikipedia.org/wiki/Splay_tree}{Splay tree} is a self-balancing binary search tree. Insert and delete operations take amortized $O(\lg n)$ time. The idea is to rotate the accessed node to the root.
 
 \section{Scapegoat tree}
-\href{https://en.wikipedia.org/wiki/Scapegoat_tree}{Scapegoat tree} is a self-balancing binary search tree. Insert and delete operations take amortized $O(\lg n)$ time. The idea is to rebuild part of the tree (rooted at \emph{scapegoat} when the tree becomes imbalance with respect to certain criterion. In the original paper, the rebuilding phase takes $O(\lg n)$ space, but the rebuilding can be done by using Day-Stout-Warren algorithm to achieve $O(1)$ space.
+\href{https://en.wikipedia.org/wiki/Scapegoat_tree}{Scapegoat tree} is a self-balancing binary search tree. The tree height is always $O(\lg n)$. Insert and delete operations take amortized $O(\lg n)$ time. The idea is to rebuild part of the tree (rooted at \emph{scapegoat} when the tree becomes imbalance with respect to certain criterion. In the original paper, the rebuilding phase takes $O(\lg n)$ space, but the rebuilding can be done by using Day-Stout-Warren algorithm to achieve $O(1)$ space.
 
 \section{Treap}
 \href{https://en.wikipedia.org/wiki/Treap}{Treap} is a self-balancing binary search tree. Insert and delete operations take expected $O(\lg n)$ time. The idea is to assign each node a random real number between 0 and 1. In addition to the binary search tree constraints, the assigned random numbers of nodes also needs to satisfy heap property. Thus, a treap is always a random binary search tree if no collision of random number occurs. However, since real number is only represented by finite number of floating point numbers, there is no guarantee that collision won't occur. The original insert and delete methods are based on rotation.
@@ -182,24 +182,24 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion/deletion ope
   \hline
   AA-tree & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
   \hline
-  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
-  & & Amortized & &  & & $O(\lg n)$ & \\
-   & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
-  & & Amortized & &  & & $O(\lg n)$ & \\
+  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & $O(\lg n)$ & $O(\lg n)$ & & $O(\lg n)$ & \\
+   & \multirow{2}{*}{Top-down} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
-  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$\tnote{7}} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Amortized & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
-  \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
-  & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
+  \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & $O(\lg n)$ & & $O(\lg n)$ & \\
   & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
   & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
   \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
   & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
-  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{Y} \\
-  & & Expected & $O(\lg n)$ & & & & \\
+  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
   DSL & & Worst case & $O(\lg n)$ & $O(1)$ & 1 & $O(\lg n)$ & Y \\
 \end{tabular}
@@ -210,7 +210,6 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion/deletion ope
 \item[4] Although the insertion rotates at most twice, the number of changing rank is $O(\lg n)$.
 \item[5] When a duplicated is inserted, one more pass is needed.
 \item[6] Although the number of rotations is amortized $O(1)$, maintaining the size of subtrees requires
-\item[7] Using Day-Stout-Warren algorithm to rebuild the tree.
 \end{tablenotes}
 \caption{Summary of insert operation of various data structures.}\label{insert}
 \end{threeparttable}
@@ -239,12 +238,12 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion/deletion ope
   \hline
   AA-tree & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
   \hline
-  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(\lg n)$} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
-  & & Amortized & &  & & $O(\lg n)$ & \\
-   & \multirow{2}{*}{Top-down} & Worst case & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
-  & & Amortized & &  & & $O(\lg n)$ & \\
+  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{N} \\
+  & & Amortized & $O(\lg n)$ & $O(\lg n)$ & & $O(\lg n)$ & \\
+   & \multirow{2}{*}{Top-down} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Amortized & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
-  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$\tnote{7}} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  \multirow{2}{*}{Scapegoat tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$\tnote{7}} & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Amortized & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
   \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
@@ -255,8 +254,8 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion/deletion ope
   \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
-  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & \multirow{2}{*}{$O(n)$} & \multirow{2}{*}{Y} \\
-  & & Expected & $O(\lg n)$ & & & & \\
+  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
+  & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
   DSL & & Worst case & $O(\lg n)$ & $O(1)$ & 1 & $O(\lg n)$ & Y \\
 \end{tabular}
