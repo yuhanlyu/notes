@@ -154,8 +154,9 @@ The original insert and delete methods are based on split and join, which can al
 \href{https://en.wikipedia.org/wiki/Skip_list}{Skip list} is a list like data structure. The idea is to build index structure probabilistically. Insert and delete operations take expected $O(\lg n)$ time. Unlike BST that will compare a given key with an element in the tree at most once, skip list might compare  the given key with an element in the skip list multiple time that leads to more number of comparisons.
 
 \subsection{Deterministic skip list (DSL)}
-Deterministic skip list is a derandomization version of skip list~\cite{Munro1992}. Insert and delete operations take $O(\lg n)$ time. The equivalence of DSL and B-tree can also be shown~\cite{Lamoureux1996}.
-
+Deterministic skip list is a derandomization version of skip list~\cite{Munro1992}. Insert and delete operations take $O(\lg n)$ time. The equivalence of DSL and B-tree can also be s
+hown~\cite{Lamoureux1996}.
+ 
 \section{Summary}
 Tables~\ref{insert} and~\ref{delete} are summaries of the insertion and deletion operations of data structures assuming no parent pointer or link reversal technique is used. When parent pointer or link reversal technique is used, the space complexity of all operations can be reduced to $O(1)$.
 
@@ -192,13 +193,13 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion and deletion
   \hline
   \multirow{4}{*}{Treap} & \multirow{2}{*}{Rotation} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Expected & $O(\lg n)$ & $O(\lg n)$ & & $O(1)$ & \\
-  & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N\tnote{5}} \\
   & & Expected & $O(\lg n)$ & & & $O(1)$ & \\
   \hline
-  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N\tnote{5}} \\
   & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
-  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N\tnote{5}} \\
   & & Expected & $O(\lg n)$ & & & $O(\lg n)$ & \\
   \hline
   DSL & & Worst case & $O(\lg n)$ & $O(1)$ & 1 & $O(\lg n)$ & Y \\
@@ -238,7 +239,7 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion and deletion
   \hline
   AA-tree & Bottom-up & Worst case & $O(\lg n)$ & $O(\lg n)$ & 2 & $O(\lg n)$ & Y \\
   \hline
-  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{N} \\
+  \multirow{4}{*}{Splay tree} & \multirow{2}{*}{Bottom-up} & Worst case & $O(n)$ & $O(n)$ & \multirow{2}{*}{2} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Amortized & $O(\lg n)$ & $O(\lg n)$ & & $O(\lg n)$ & \\
    & \multirow{2}{*}{Top-down} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Amortized & $O(\lg n)$ &  & & $O(\lg n)$ & \\
@@ -251,7 +252,7 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion and deletion
   & \multirow{2}{*}{Split-join} & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
   & & Expected & $O(\lg n)$ & & & $O(1)$ & \\
   \hline
-  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N} \\
+  \multirow{2}{*}{RBST} & \multirow{2}{*}{Split-join}& Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{N\tnote{5}} \\
   & & Expected & $O(\lg n)$ &  & & $O(\lg n)$ & \\
   \hline
   \multirow{2}{*}{Skip List} & & Worst case & $O(n)$ & \multirow{2}{*}{$O(1)$} & \multirow{2}{*}{1} & $O(n)$ & \multirow{2}{*}{Y} \\
@@ -264,7 +265,7 @@ Tables~\ref{insert} and~\ref{delete} are summaries of the insertion and deletion
 \item[2] Tarjan's version~\cite{Tarjan1985}. The original red-black tree top-down deletion does not have amortized $O(1)$ guarantee.
 \item[3] The number of rotations is $O(\lg n)$.
 \item[4] Although the deletion rotates at most twice, the number of changing rank is $O(\lg n)$.
-\item[5] When removing an non-existence element, one additional pass is needed to restore auxiliary information.
+\item[5] When removing a non-existence element, one additional pass is needed to restore auxiliary information.
 \item[6] Although the number of rotations is amortized $O(1)$, maintaining the size of subtrees requires $O(\lg n)$ time.
 \item[7] Using Day-Stout-Warren algorithm to rebuild the tree.
 \end{tablenotes}

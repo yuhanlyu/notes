@@ -58,6 +58,16 @@ Use BFS to traverse from $v_a$. Find the first back edge from vertex $u$ back to
 The idea is to transform the problem to an unweighted graph and use BFS to find the shortest path. Construct a graph $G' = (V \cup V', E')$ as follows:. For every edge $(u, v) \in E$ of weight $k$, if $k = 1$, then add an edge $(u, v)$ to $E'$. Otherwise, add $k-1$ vertices $uv_1 \sim uv_{k-1}$ to $V'$ and add edges $(u, uv_1)$, $(uv_{k-1}, v)$, and $(uv_i, uv_{i+1})$ for all $1 \leq i \leq k-2$ to $E'$. This transformation does not create path between any vertex in $V$. Moreover, if one path from $u$ to $v$ of cost $C$ exists in $G$, then one path from $u$ to $v$ of $C$ edges also exists in $G'$. Since $k$ is at most $5$, the size of $V'$ and $E'$ is $O(\abs{E})$. Thus, the time complexity is $O(\abs{E})$.
 \end{Answer}
 
+\begin{Exercise}[origin={NCU CSIE 95}]
+Given an undirected graph $G = (V, E)$ with $n = \abs{V}$ vertices, four vertices of $G$, say, $u$, $v$, $x$, and $y$, are said to form a $4$-cycle if $(u, v)$, $(v, x)$, $(x, y)$ and $(y, u)$ are in $E$. Consider the problem of determining whether $G$ contains a $4$-cycle. A naive method by checking all possible $4$-combinations of the vertex set will need $\Omega(n^4)$ time to complete the job. Design a more efficient algorithm (i.e., the time complexity of your algorithm should be $O(n^k)$ with $k < 4$) to solve the problem. Analysis the execution time of your algorithm.
+\end{Exercise}
+\begin{Answer}
+For one vertex $v$, determining whether there is a $4$-cycle containing $v$ by the following way: from $v$, execute BFS for one round to find all neighbors of $v$. Then, when executing BFS for the second round, if there is a vertex $y \neq v$ that has been traversed from two vertices $u$ and $x$, then we found a $4$-cycle. Otherwise, there is no $4$-cycle containing $v$. In the second round, any vertex $y$ can at most be traversed twice. Thus, these two rounds take $O(n)$ time. Since for each vertex $v$, determining whether there is a $4$-cycle containing $v$ takes $O(n)$ time, the total time complexity is $O(n^2)$ and the space complexity is $O(n)$.
+\begin{remark}
+For any even number $k$, finding a cycle of length $k$ can be done in $O(n^2)$ time~\cite{Yuster1997}. Finding a path of length at least $k$ > 0 can be done in $O^*(k^2)$~\cite{RWilliams2009}.
+\end{remark}
+\end{Answer}
+
 \subsection{Topological sort}
 \begin{Exercise}[origin={CYCU CSIE 92}]
 Professor Lee wants to construct the tallest tower possible out of building blocks. She has $n$ types of blocks, and an unlimited supply of blocks of each type. Each type-$i$ block is rectangular solid with linear dimension $(x_i, y_i, z_i)$. A block can be oriented so that any two of its three dimensions determine the dimensions of a base and the other dimension is the height. In building a tower, one block may be placed on top of another block as long as the two dimensions of the lower block. (Thus, for example, blocks oriented to have equal-sized bases cannot be stacked.) Use graph model to design an efficient algorithm to determine the tallest tower that the professor can build. Analyze the run time complexity.
@@ -115,12 +125,6 @@ We can create a graph $G = (V, E)$, where $V$ consists of all vertices on the gr
 
 Although traditional network has only edge capacity, we can transform node-capacitated network into edge-capacitated graph. For each vertex $v$, we create two vertices $v'$ and $v''$, such that all the incoming edges of $v$ connect to $v'$ and all outgoing edges of $v$ connect to $v''$. Moreover, we connect $v'$ to $v''$ with edge capacity equals to $v'$s node capacity. It is easy to see that a feasible flow in the transformed network can be transformed to a feasible flow in the original network, and \textit{vice versa}.
 \end{Answer}
-%
-%\begin{Exercise}[origin={FJU CSIE 91}]
-%Suppose we are to assign $n$ persons to $n$ jobs. Let $C_{ij}$ be the cost of assigning the $i$-th person to the $j$-th job. Use a greedy method approach to write an algorithm that finds an assignment that minimizes the total cost of assigning all $n$ persons to all $n$ jobs. Analyze your algorithm, and give the time complexity using order notation.
-%\end{Exercise}
-%\begin{Answer}
-%\end{Answer}
 
 \section{Others}
 \begin{Exercise}[title={Strong orientation},origin={NCKU IM 99}]
@@ -138,17 +142,5 @@ A tournament $T = (V, E)$ is a simple digraph of $\abs{V} = n$ vertices and $\ab
 \begin{Answer}
 A naive solution is to generate all $3$-tuple $(i, j, k)$ and check. This method needs $O(n^3)$ time. We know that a tournament is transitive if and only if $T$ is acyclic. Thus, we can use DFS to test whether the graph is acyclic in $O(n^2)$ time. Moreover, we know that a tournament is transitive if and only if all values in $\text{outdegree}$ are distinct. Since the range of $\text{outdegree}$ is from $0$ to $n-1$, we can use an array to test whether all elements are distinct in $O(n)$ time.
 \end{Answer}
-
-
-\begin{Exercise}[origin={NCU CSIE 95}]
-Given an undirected graph $G = (V, E)$ with $n = \abs{V}$ vertices, four vertices of $G$, say, $u$, $v$, $x$, and $y$, are said to form a $4$-cycle if $(u, v)$, $(v, x)$, $(x, y)$ and $(y, u)$ are in $E$. Consider the problem of determining whether $G$ contains a $4$-cycle. A naive method by checking all possible $4$-combinations of the vertex set will need $\Omega(n^4)$ time to complete the job. Design a more efficient algorithm (i.e., the time complexity of your algorithm should be $O(n^k)$ with $k < 4$) to solve the problem. Analysis the execution time of your algorithm.
-\end{Exercise}
-\begin{Answer}
-Finding a $4$-cycle is the same as finding two vertices with two common neighbors. For each vertex $v$, enumerate all pairs of $v$'s pair. During the enumeration, if a pair is enumerated twice, then a $4$-cycle must exist. Since there are at most $O(n^2)$ pairs of vertices, the time complexity is $O(n^2)$.
-\begin{remark}
-For any even number $k$, finding a cycle of length $k$ can be done in $O(n^2)$ time~\cite{Yuster1997}. Finding a path of length at least $k$ > 0 can be done in $O^*(k^2)$~\cite{RWilliams2009}.
-\end{remark}
-\end{Answer}
-
 
 \printbibliography[heading=subbibliography]
