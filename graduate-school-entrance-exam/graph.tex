@@ -34,6 +34,7 @@ Question~\ref{lca:22}: If the $\text{temp}$ field does not exist, then we can us
 \Question For an undirected graph $G = (V, E)$, a vertex $v \in V$, and an edge $(x, y) \in E$, let $G\setminus v$ denote the subgraph of $G$ obtained by removing $v$ and all the edges incident to $v$ from $G$; and let $G\setminus(x, y)$ denote the subgraph of $G$ obtained by removing the edge $(x, y)$ from $G$. If $G$ is connected, then $G\setminus v$ can be disconnected or connected. \label{dfs:2}
 \subQuestion Given a connected graph $G$, design an $O(\abs{V})$ time algorithm to find a vertex $v \in G$ such that $G\setminus v$ is connected. \label{dfs:21}
 \subQuestion Given a connected graph $G$, design an $O(\abs{V})$ time algorithm to either find an edge $(x, y) \in G$ such that $G\setminus (x, y)$  is connected or report that no such an edge exists. \school{[NCU CSIE 102]} \label{dfs:22}
+\Question A graph $G$ has edges which are colored either red or blue. Give the fastest algorithm that you can think of to compute a spanning tree with as few blue edges as possible. \school{[NCTU CS 106]} \label{dfs:3}
 \end{Exercise}
 \begin{Answer}
 
@@ -42,6 +43,9 @@ Without loss of generality, suppose that $m = n-1$, otherwise it is not a tree o
 
 \paragraph{Problem~\ref{dfs:2}}
 For Question~\ref{dfs:21}, no such an algorithm exists.\footnote{\url{http://cstheory.stackexchange.com/a/33703/28542}} For Question~\ref{dfs:22}, use DFS to find a cycle and any edge on this cycle can be removed without disconnecting the graph. If no cycle exists, this graph is a tree and every edge cannot be removed. The time complexity is $O(\abs{V})$.
+
+\paragraph{Problem~\ref{dfs:3}}
+First, build the connected component graph with red edges. Then, find edges between connected components using blue edges. The total time complexity is $O(|V| + |E|)$.
 \end{Answer}
 
 \subsection{BFS}
@@ -69,11 +73,18 @@ For any even number $k$, finding a cycle of length $k$ can be done in $O(n^2)$ t
 \end{Answer}
 
 \subsection{Topological sort}
+\begin{Exercise}[origin={NCKU CSIE 106}]
+A directed graph $G = (V, E)$ is \emph{semiconnected} if, for all pairs of vertices $u$, $v \in V$, $u$ is reachable from $v$ through a directed path, or $v$ is reachable from $u$ through a directed path. Given a linear-time algorithm to determine whether or not $G$ is semiconnected.
+\end{Exercise}
+\begin{Answer}
+Since for any pair of vertices $u$, $v$ in the same strongly connected component, $u$ is reachable from $v$ and $v$ is reachable from $u$, $G$ is semiconnected if and only if the strongly connected component graph (SCC) is semiconnected. Moreover, note that SCC is an directed acyclic graph by definition. A directed acyclic graph is semiconnected if, and only if, when order the vertices by an topological order, any consecutive vertices have an edge in the graph. Thus, we can build SCC of $G$ first and then find an topological order to determine whether SCC is semiconnected. The total time complexity is $O(|V| + |E|)$.
+\end{Answer}
+
 \begin{Exercise}[origin={CYCU CSIE 92}]
 Professor Lee wants to construct the tallest tower possible out of building blocks. She has $n$ types of blocks, and an unlimited supply of blocks of each type. Each type-$i$ block is rectangular solid with linear dimension $(x_i, y_i, z_i)$. A block can be oriented so that any two of its three dimensions determine the dimensions of a base and the other dimension is the height. In building a tower, one block may be placed on top of another block as long as the two dimensions of the lower block. (Thus, for example, blocks oriented to have equal-sized bases cannot be stacked.) Use graph model to design an efficient algorithm to determine the tallest tower that the professor can build. Analyze the run time complexity.
 \end{Exercise}
 \begin{Answer}
-For each type $i$ block, construct three nodes, $v_{i1}$, $v_{i2}$, and $v_{i3}$, corresponding to three faces, $x_i \times y_i$, $y_i \times z_i$, and $x_i \times z_i$.  If one type $j$ block can be placed on top of a type $i$ block, then create the edges between the corresponding faces and the edge's weight is the height of type $j$ block. The longest path in this graph is the tallest tower can be built. Since the graph is a directed acyclic graph, we can find the longest path in $O(\abs{V} + \abs{E})$ time by using topological sort. Bacause the graph has $3n$ vertices and $O(n^2)$ edges, the time complexity is $O(n^2)$.
+For each type $i$ block, construct three nodes, $v_{i1}$, $v_{i2}$, and $v_{i3}$, corresponding to three faces, $x_i \times y_i$, $y_i \times z_i$, and $x_i \times z_i$.  If one type $j$ block can be placed on top of a type $i$ block, then create the edges between the corresponding faces and the edge's weight is the height of type $j$ block. The longest path in this graph is the tallest tower can be built. Since the graph is a directed acyclic graph, we can find the longest path in $O(\abs{V} + \abs{E})$ time by using topological sort. Because the graph has $3n$ vertices and $O(n^2)$ edges, the time complexity is $O(n^2)$.
 \end{Answer}
 
 \section{Path}
