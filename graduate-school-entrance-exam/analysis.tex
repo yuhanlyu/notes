@@ -23,7 +23,7 @@ Making assumptions can make the analysis easier.
 \begin{Answer}
 According to the definition of big $O$ notation, we say $f(n) = O(g(n))$ if there exists constants $c$ and $n'$, such that $f(n) \leq cg(n)$ for all $n > n'$.
 
-For the first problem, we know that the $\sin$ function will fluctuate between $1$ and $-1$. Although $\frac{\sin n}{\lg n}$ will become very small when $n$ approaches infinity, we still cannot get constants $c$ and $n'$ such that $T(n) \leq cn^2$ for all $n > n'$.
+For the first problem, we know that the $\sin$ function will fluctuate between $1$ and $-1$. Thus, $n^{2 + \frac{\sin n}{\lg n}} \leq n^{2 + \frac{1}{\lg n}} = O(n^2)$
 
 For the second problem, we know that the $\cos$ function will fluctuate between $1$ and $-1$. So, the equation $n^2 \cos (\sqrt{n}) = O(n^2)$ holds, and we can apply the master theorem to get $T(n) = O(n^2 \lg n)$.
 \end{Answer}
@@ -34,7 +34,7 @@ Several forms of the master theorem have been proven. Verma gives the following 
 \begin{theorem}
 Let $T(n) = aT(n / b) + f(n)$ for all $n > 1$ and $T(1) = c$ for some constants $a \geq 1$, $b > 1$, $c > 0$, and non-negative function $f(n)$.
 \begin{enumerate}
-\item if $f(n) = O(n^{\lg_b a} / \lg n)(1 + \epsilon)$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^{\lg_b a})$.
+\item if $f(n) = O(n^{\lg_b a} / (\lg n)^{1 + \epsilon})$ for some constant $\epsilon > 0$, then $T(n) = \Theta(n^{\lg_b a})$.
 \item if $f(n) = \Theta(n^{\lg_b a} \lg^k n)$ for some $k \geq 0$, then $T(n) = \Theta(n^{\lg_b a} \lg^{k+1} n)$.
 \item if $f(n) = \Omega(n^{\epsilon + \lg_b a})$ for some constant $\epsilon > 0$, and if $af(n/b) \leq kf(n)$ for some constant $k < 1$ and all sufficiently large $n$, then $T(n) = \Omega(f(n))$.
 \item if $f(n) = \Theta(n^{\lg_b a} / \lg n)$, then $T(n) = \Theta(f(n) \lg n \lg \lg n)$.
